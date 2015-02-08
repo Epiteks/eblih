@@ -2,7 +2,7 @@
 BLIH simplified for Epitech
 
 ## Thanks
-Thanks to "IONIS Bocal" korovi_o and [Shakarang](https://github.com/Shakarang)
+Thanks to "IONIS Bocal", korovi_o and [Shakarang](https://github.com/Shakarang)
 
 ## Before using
 You can set the variables in commandline or in your shell's config file
