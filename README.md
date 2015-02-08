@@ -36,8 +36,18 @@ Environment variables :
     EPITECH_TOKEN               -- Your UNIX password in SHA512
 ````
 
+## Changelogs
+
+* v0.2
+    * Add -V | --version in usage
+    * "Version" option shows you the BLIH version and the blihtek version
+    * "Version" option shows you a message if there is an update available
+
+* v0.1
+    * Add colors to output
+    * Add -c | --nocolor mode
+    * Set automaticaly the ACL "read" to ramassage-tek when you create a repository
+
 ## TODO
 
-* Add update mode
-    Verify if you have the last version of blihtek
 * Integration of [Epidepot](https://github.com/Shakarang/epidepot)

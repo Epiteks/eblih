@@ -10,7 +10,7 @@ import json
 import getpass
 
 versionBLIH = 1.7
-version = 0.1
+versionBLIHTEK = 0.1
 
 class blih:
 	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(versionBLIH) + '-linux'):
@@ -201,6 +201,21 @@ def whoami(args, baseurl, user, token, verbose, user_agent):
 	handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
 	handle.whoami()
 
+def version():
+	lastVersion = urllib.request.urlopen('https://raw.githubusercontent.com/hug33k/blihtek/master/.version').read().decode('utf-8').replace('\n', '')
+	if lastVersion == str(versionBLIHTEK):
+		isUpdate = False
+	else:
+		isUpdate = True
+	print (setcolor("green") + 'Versions\n')
+	print ('blih\t' + setcolor("blue") + str(versionBLIH))
+	if isUpdate == False:
+		print (setcolor("green") + 'blihtek\t' + setcolor("blue") + str(versionBLIHTEK))
+	else:
+		print (setcolor("green") + 'blihtek\t' + setcolor("red") + str(versionBLIHTEK))
+		print (setcolor("red") + 'An update is available ' + setcolor("green") + '(' + lastVersion + ')' + setcolor(""))
+	sys.exit(0)
+
 def setcolor(color):
 	if colors == True:
 		if color == "red":
@@ -286,8 +301,7 @@ if __name__ == "__main__":
 		elif o in ('-t', '--token'):
 			token = bytes(a, 'utf8')
 		elif o in ('-V', '--versionBLIH'):
-			print ('Versions\n' + setcolor("green") + 'blih\t' + setcolor("blue") + str(versionBLIH) + '\n' + setcolor("green") + 'blihtek\t' + setcolor("blue") + str(version))
-			sys.exit(0)
+			version()
 		elif o in ('-U', '--useragent'):
 			user_agent = a
 		else:
