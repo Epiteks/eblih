@@ -10,7 +10,7 @@ import json
 import getpass
 
 versionBLIH = 1.7
-versionBLIHTEK = 0.1
+versionBLIHTEK = 0.2
 
 class blih:
 	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(versionBLIH) + '-linux'):
