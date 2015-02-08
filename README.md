@@ -1,8 +1,23 @@
 # blihtek
 BLIH simplified for Epitech
 
-# Usage
-Usage: ./blih.py [options] command ...
+## Thanks
+Thanks to korovi_o and [Shakarang](https://github.com/Shakarang)
+
+## Before using
+You can set the variables
+````
+export EPITECH_LOGIN="login_x"
+export EPITECH_TOKEN="UNIX PWD in SHA512"
+````
+And copy blihtek to your /usr/bin directory
+````
+sudo cp blihtek /usr/bin/
+````
+## Usage
+````
+Usage: ./blihtek [options] command ...
+>>>>>>> 06ba0ba7b0c6d4d0ce6de5da4fdf9494b71bff83
 
 Global Options :
     -u user | --user=user       -- Run as user
