@@ -9,10 +9,11 @@ import urllib.parse
 import json
 import getpass
 
-version = 1.7
+versionBLIH = 1.7
+version = 0.1
 
 class blih:
-	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(version) + '-linux'):
+	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(versionBLIH) + '-linux'):
 		self._baseurl = baseurl
 		if token:
 			self._token = token
@@ -243,6 +244,7 @@ def usage(mode):
 		print ('\t-c | --nocolor\t\t\t-- ' + setcolor("green") + 'Remove the colors' + setcolor(""))
 		print ('\t-b ' + setcolor("blue") + 'url' + setcolor("") + ' | --baseurl=' + setcolor("blue") + 'url' + setcolor("") + '\t\t-- ' + setcolor("green") + 'Base URL for BLIH' + setcolor(""))
 		print ('\t-t ' + setcolor("blue") + 'token' + setcolor("") + ' | --token ' + setcolor("blue") + 'token' + setcolor("") + '\t-- ' + setcolor("green") + 'Specify token in the cmdline' + setcolor(""))
+		print ('\t-V | --version\t\t\t-- ' + setcolor("green") + 'Version' + setcolor(""))
 		print ()
 		print ('Commands :')
 		print ('\trepository\t\t\t-- ' + setcolor("green") + 'Repository management' + setcolor(""))
@@ -266,7 +268,7 @@ if __name__ == "__main__":
 	user = None
 	baseurl = 'https://blih.epitech.eu/'
 	token = None
-	user_agent = 'blih-' + str(version)
+	user_agent = 'blih-' + str(versionBLIH)
 	global colors
 	colors = True
 
@@ -283,8 +285,8 @@ if __name__ == "__main__":
 			baseurl = a
 		elif o in ('-t', '--token'):
 			token = bytes(a, 'utf8')
-		elif o in ('-V', '--version'):
-			print ('blih version ' + str(version))
+		elif o in ('-V', '--versionBLIH'):
+			print ('Versions\n' + setcolor("green") + 'blih\t' + setcolor("blue") + str(versionBLIH) + '\n' + setcolor("green") + 'blihtek\t' + setcolor("blue") + str(version))
 			sys.exit(0)
 		elif o in ('-U', '--useragent'):
 			user_agent = a
