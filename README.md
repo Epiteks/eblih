@@ -34,3 +34,10 @@ Commands :
 Environment variables :
     EPITECH_LOGIN               -- Your login
     EPITECH_TOKEN               -- Your UNIX password in SHA512
+````
+
+## TODO
+
+* Add update mode
+    Verify if you have the last version of blihtek
+* Integration of [Epidepot](https://github.com/Shakarang/epidepot)
