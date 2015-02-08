@@ -17,7 +17,6 @@ sudo cp blihtek /usr/bin/
 ## Usage
 ````
 Usage: ./blihtek [options] command ...
->>>>>>> 06ba0ba7b0c6d4d0ce6de5da4fdf9494b71bff83
 
 Global Options :
     -u user | --user=user       -- Run as user
