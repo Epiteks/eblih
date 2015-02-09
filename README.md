@@ -71,21 +71,21 @@ Commands :
 * SSHKey mode
 ````
 Commands :
-    upload file             -- Upload a new ssh-key
-    list                    -- List the ssh-keys
-    delete sshkey           -- Delete the sshkey with comment <sshkey>
+    upload file                 -- Upload a new ssh-key
+    list                        -- List the ssh-keys
+    delete sshkey               -- Delete the sshkey with comment <sshkey>
 ````
 
 * Config mode
 ````
 Commands :
-    crypt                  -- Crypt your password in SHA512 for EPITECH_TOKEN
-    disp                   -- Display all the values of blihtek variables
-    disp variable          -- Display the value of blihtek variable
-                           Variables:
-                           login  for EPITECH_LOGIN
-                           token  for EPITECH_TOKEN
-                           folder for EPITECH_FOLDER
+    crypt                       -- Crypt your password in SHA512 for EPITECH_TOKEN
+    disp                        -- Display all the values of blihtek variables
+    disp variable               -- Display the value of blihtek variable
+                                Variables:
+                                login  for EPITECH_LOGIN
+                                token  for EPITECH_TOKEN
+                                folder for EPITECH_FOLDER
 ````
 
 ## Changelogs
