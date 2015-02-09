@@ -9,9 +9,10 @@ import urllib.parse
 import json
 import getpass
 import subprocess
+import ntpath
 
 versionBLIH = 1.7
-versionBLIHTEK = 0.5
+versionBLIHTEK = 0.6
 
 class blih:
 	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(versionBLIH) + '-linux'):
@@ -160,6 +161,29 @@ class blihtek:
 			sys.exit(0)
 		print (setcolor("green") + "Repository linked" + setcolor(""))
 
+	def conf_crypt():
+		password = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor("")), 'utf8')).hexdigest(), 'utf8')
+		print(password.decode("utf-8"))
+
+	def conf_disp(variable):
+		if variable == "login":
+			if os.getenv("EPITECH_LOGIN") != None:
+				print (setcolor("green") + "EPITECH_LOGIN" + setcolor("") + "\n" + os.getenv("EPITECH_LOGIN"))
+			else:
+				print (setcolor("red") + "EPITECH_LOGIN is not set" + setcolor(""))
+		elif variable == "token":
+			if os.getenv("EPITECH_TOKEN") != None:
+				print (setcolor("green") + "EPITECH_TOKEN" + setcolor("") + "\n" + os.getenv("EPITECH_TOKEN"))
+			else:
+				print (setcolor("red") + "EPITECH_TOKEN is not set" + setcolor(""))
+		elif variable == "folder":
+			if os.getenv("EPITECH_FOLDER") != None:
+				print (setcolor("green") + "EPITECH_FOLDER" + setcolor("") + "\n" + os.getenv("EPITECH_FOLDER"))
+			else:
+				print (setcolor("red") + "EPITECH_FOLDER is not set" + setcolor(""))
+		else:
+			usage("config")
+
 def repository(args, baseurl, user, token, verbose, folder, user_agent):
 	if len(args) == 0:
 		usage("repo")
@@ -250,9 +274,26 @@ def whoami(args, baseurl, user, token, verbose, folder, user_agent):
 	handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
 	handle.whoami()
 
+def config(args, baseurl, user, token, verbose, folder, user_agent):
+	if len(args) == 0:
+		usage("config")
+	if args[0] == 'crypt':
+		blihtek.conf_crypt()
+	elif args[0] == 'disp':
+		if len(args) == 1:
+			blihtek.conf_disp("login")
+			blihtek.conf_disp("token")
+			blihtek.conf_disp("folder")
+		elif len(args) == 2:
+			blihtek.conf_disp(args[1])
+		else:
+			usage("config")
+	else:
+		usage("config")
+
 def version():
 	lastVersion = urllib.request.urlopen('https://raw.githubusercontent.com/hug33k/blihtek/master/.version').read().decode('utf-8').replace('\n', '')
-	if lastVersion == str(versionBLIHTEK):
+	if lastVersion <= str(versionBLIHTEK):
 		isUpdate = False
 	else:
 		isUpdate = True
@@ -279,8 +320,9 @@ def setcolor(color):
 		return ""
 
 def usage(mode):
+	name = ntpath.basename(sys.argv[0])
 	if mode == "repo":
-		print (setcolor("red") + 'Usage: ' + sys.argv[0] + ' [options] repository command ...')
+		print (setcolor("red") + 'Usage: ' + name + ' [options] repository command ...')
 		print (setcolor(""))
 		print ('Commands :')
 		print ('\tnew ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Create and clone the repository ' + setcolor("blue") + 'repo' + setcolor(""))
@@ -298,14 +340,25 @@ def usage(mode):
 		print ('\t\t\t\t\t' + setcolor("blue") + 'w' + setcolor("") + ' for ' + setcolor("green") + 'write' + setcolor(""))
 		print ('\t\t\t\t\t' + setcolor("blue") + 'a' + setcolor("") + ' for ' + setcolor("green") + 'admin' + setcolor(""))
 	elif mode == "ssh":
-		print (setcolor("red") + 'Usage: ' + sys.argv[0] + ' [options] sshkey command ...')
+		print (setcolor("red") + 'Usage: ' + name + ' [options] sshkey command ...')
 		print (setcolor(""))
 		print ('Commands :')
-		print ('\tupload ' + setcolor("blue") + '[file]' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Upload a new ssh-key' + setcolor(""))
+		print ('\tupload ' + setcolor("blue") + 'file' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Upload a new ssh-key' + setcolor(""))
 		print ('\tlist\t\t\t\t-- ' + setcolor("green") + 'List the ssh-keys' + setcolor(""))
-		print ('\tdelete ' + setcolor("blue") + '<sshkey>' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Delete the sshkey with comment <sshkey>' + setcolor(""))
+		print ('\tdelete ' + setcolor("blue") + 'sshkey' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Delete the sshkey with comment ' + setcolor("blue") + 'sshkey' + setcolor(""))
+	elif mode == "config":
+		print (setcolor("red") + 'Usage: ' + name + ' [options] config command ...')
+		print (setcolor(""))
+		print ('Commands :')
+		print ('\tcrypt ' + '\t\t\t\t-- ' + setcolor("green") + 'Crypt your password in SHA512 for ' + setcolor("blue") + 'EPITECH_TOKEN' + setcolor(""))
+		print ('\tdisp ' + '\t\t\t\t-- ' + setcolor("green") + 'Display all the values of blihtek variables' + setcolor(""))
+		print ('\tdisp ' + setcolor("blue") + 'variable' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Display the value of blihtek ' + setcolor("blue") + 'variable' + setcolor(""))
+		print ('\t\t\t\t\tVariables:')
+		print ('\t\t\t\t\t' + setcolor("blue") + 'login' + setcolor("") + '  for ' + setcolor("green") + 'EPITECH_LOGIN' + setcolor(""))
+		print ('\t\t\t\t\t' + setcolor("blue") + 'token' + setcolor("") + '  for ' + setcolor("green") + 'EPITECH_TOKEN' + setcolor(""))
+		print ('\t\t\t\t\t' + setcolor("blue") + 'folder' + setcolor("") + ' for ' + setcolor("green") + 'EPITECH_FOLDER' + setcolor(""))
 	else:
-		print (setcolor("red") + 'Usage: ' + sys.argv[0] + ' [options] command ...')
+		print (setcolor("red") + 'Usage: ' + name + ' [options] command ...')
 		print (setcolor(""))
 		print ('Global Options :')
 		print ('\t-u ' + setcolor("blue") + 'user' + setcolor("") + ' | --user=' + setcolor("blue") + 'user' + setcolor("") + '\t\t-- ' + setcolor("green") + 'Run as ' + setcolor("blue") + 'user' + setcolor(""))
@@ -320,6 +373,7 @@ def usage(mode):
 		print ('\trepository\t\t\t-- ' + setcolor("green") + 'Repository management' + setcolor(""))
 		print ('\tsshkey\t\t\t\t-- ' + setcolor("green") + 'SSH-KEYS management' + setcolor(""))
 		print ('\twhoami\t\t\t\t-- ' + setcolor("green") + 'Print who you are' + setcolor(""))
+		print ('\tconfig\t\t\t\t-- ' + setcolor("green") + 'Modify blihtek configuration' + setcolor(""))
 		print ()
 		print ('Environment variables :')
 		print ('\tEPITECH_LOGIN\t\t\t-- ' + setcolor("green") + 'Your login' + setcolor(""))
@@ -387,5 +441,7 @@ if __name__ == "__main__":
 		sshkey(args[1:], baseurl, user, token, verbose, folder, user_agent)
 	elif args[0] == 'whoami':
 		whoami(args[1:], baseurl, user, token, verbose, folder, user_agent)
+	elif args[0] == 'config':
+		config(args[1:], baseurl, user, token, verbose, folder, user_agent)
 	else:
 		usage("")
