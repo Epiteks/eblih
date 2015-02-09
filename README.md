@@ -61,7 +61,7 @@ Commands :
     info repo                   -- Get the repository metadata
     getacl repo                 -- Get the acls set for the repository
     list                        -- List the repositories created
-    setacl repo user [acl]      -- Set (or remove) an acl for "user" on "repo"
+    setacl repo user acl        -- Set (or remove) an acl for "user" on "repo"
                                 ACL format:
                                 r for read
                                 w for write
@@ -71,9 +71,9 @@ Commands :
 * SSHKey mode
 ````
 Commands :
-    upload [file]           -- Upload a new ssh-key
+    upload file             -- Upload a new ssh-key
     list                    -- List the ssh-keys
-    delete <sshkey>         -- Delete the sshkey with comment <sshkey>
+    delete sshkey           -- Delete the sshkey with comment <sshkey>
 ````
 
 * Config mode

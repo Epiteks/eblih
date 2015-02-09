@@ -334,7 +334,7 @@ def usage(mode):
 		print ('\tinfo ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Get the repository ' + setcolor("blue") + 'info' + setcolor("green") + ' metadata' + setcolor(""))
 		print ('\tgetacl ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Get the acls set for the repository ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\tlist\t\t\t\t--' + setcolor("green") + ' List the repositories created' + setcolor(""))
-		print ('\tsetacl ' + setcolor("blue") + 'repo user [acl]' + setcolor("") + '\t\t--' + setcolor("green") + ' Set (or remove) an acl for ' + setcolor("blue") + 'user' + setcolor("green") + ' on ' + setcolor("blue") + 'repo' + setcolor(""))
+		print ('\tsetacl ' + setcolor("blue") + 'repo user acl' + setcolor("") + '\t\t--' + setcolor("green") + ' Set (or remove) an acl for ' + setcolor("blue") + 'user' + setcolor("green") + ' on ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\t\t\t\t\tACL format:')
 		print ('\t\t\t\t\t' + setcolor("blue") + 'r' + setcolor("") + ' for ' + setcolor("green") + 'read' + setcolor(""))
 		print ('\t\t\t\t\t' + setcolor("blue") + 'w' + setcolor("") + ' for ' + setcolor("green") + 'write' + setcolor(""))
