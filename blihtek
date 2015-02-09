@@ -162,8 +162,8 @@ class blihtek:
 		print (setcolor("green") + "Repository linked" + setcolor(""))
 
 	def conf_crypt():
-		password = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor("")), 'utf8')).hexdigest(), 'utf8')
-		print(password.decode("utf-8"))
+		token = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor("")), 'utf8')).hexdigest(), 'utf8')
+		print(token.decode("utf-8"))
 
 	def conf_disp(variable):
 		if variable == "login":
@@ -300,7 +300,7 @@ def version():
 	print (setcolor("blue") + 'Versions\n')
 	print ('blih\t' + setcolor("green") + str(versionBLIH))
 	if isUpdate == False:
-		print (setcolor("blue") + 'blihtek\t' + setcolor("green") + str(versionBLIHTEK))
+		print (setcolor("blue") + 'blihtek\t' + setcolor("green") + str(versionBLIHTEK) + setcolor(""))
 	else:
 		print (setcolor("blue") + 'blihtek\t' + setcolor("red") + str(versionBLIHTEK))
 		print (setcolor("red") + 'An update is available ' + setcolor("green") + '(' + lastVersion + ')' + setcolor(""))
@@ -425,15 +425,17 @@ if __name__ == "__main__":
 		usage("")
 
 	if user == None:
-		if os.getenv('EPITECH_LOGIN') == "":
+		if os.getenv("EPITECH_LOGIN") != None and os.getenv("EPITECH_LOGIN") != "":
+			user = os.getenv("EPITECH_LOGIN")
+		else:
 			user = getpass.getuser()
-		else:
-			user = os.getenv('EPITECH_LOGIN')
 	if token == None:
-		if os.getenv('EPITECH_TOKEN') == "":
-			token = bytes(hashlib.sha512(bytes(getpass.getpass(), 'utf8')).hexdigest(), 'utf8')
+		if args[0] == 'config' and args[1] == 'crypt':
+			token = ""
+		if os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "":
+			token = bytes(os.getenv("EPITECH_TOKEN"), 'utf8')
 		else:
-			token = bytes(os.getenv('EPITECH_TOKEN'), 'utf8')
+			token = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor("")), 'utf8')).hexdigest(), 'utf8')
 
 	if args[0] == 'repository':
 		repository(args[1:], baseurl, user, token, verbose, folder, user_agent)
