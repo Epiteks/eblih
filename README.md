@@ -49,9 +49,11 @@ Environment variables :
 * Repository mode
 ````
 Commands :
-    create repo                 -- Create a repository named "repo"
-    clone repo                  -- Clone the repository named "repo"
-    clone user repo             -- Clone the repository named "repo" of "user"
+    create repo                 -- Create the repository repo
+    clone repo                  -- Clone the repository repo
+    clone user repo             -- Clone the repository repo of user
+    link repo                   -- Link the current directory with repo
+    link user repo              -- Link the current directory with repo
     info repo                   -- Get the repository metadata
     getacl repo                 -- Get the acls set for the repository
     list                        -- List the repositories created
@@ -71,6 +73,9 @@ Commands :
 ````
 
 ## Changelogs
+
+* v0.4
+    * Add "repository link" to link your current directory with a repository (Yours or someone else's, if you have the ACL)
 
 * v0.3
     * Add "-f folder | --folder=folder" option
@@ -94,4 +99,5 @@ Commands :
 ## TODO
 
 * WIP : Integration of [Epidepot](https://github.com/Shakarang/epidepot)
+* Add explicit error output for subprocess.check_output ("repository clone / link")
 * Add a "search" mode for the list of repository

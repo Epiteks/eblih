@@ -11,7 +11,7 @@ import getpass
 import subprocess
 
 versionBLIH = 1.7
-versionBLIHTEK = 0.3
+versionBLIHTEK = 0.4
 
 class blih:
 	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(versionBLIH) + '-linux'):
@@ -147,6 +147,19 @@ class blihtek:
 			sys.exit(0)
 		print (setcolor("green") + "Repository cloned" + setcolor(""))
 
+	def repo_link(user, login, repo, folder):
+		if os.path.isdir(folder) == False:
+			print (setcolor("red") + "Folder does not exist" + setcolor(""))
+			sys.exit(0)
+		pwd_save = os.getenv('PWD')
+		command = "cd " + folder + "&& git init && git remote add origin " + user + "@git.epitech.eu:/" + login + "/" + repo + "&& cd " + pwd_save
+		try:
+			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+		except Exception:
+			print (setcolor("red") + "Error with repository" + setcolor(""))
+			sys.exit(0)
+		print (setcolor("green") + "Repository linked" + setcolor(""))
+
 def repository(args, baseurl, user, token, verbose, folder, user_agent):
 	if len(args) == 0:
 		usage("repo")
@@ -161,6 +174,13 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 			blihtek.repo_clone(user, user, args[1], folder)
 		elif len(args) == 3:
 			blihtek.repo_clone(user, args[1], args[2], folder)
+		else:
+			usage("repo")
+	elif args[0] == 'link':
+		if len(args) == 2:
+			blihtek.repo_link(user, user, args[1], folder)
+		elif len(args) == 3:
+			blihtek.repo_link(user, args[1], args[2], folder)
 		else:
 			usage("repo")
 	elif args[0] == 'list':
@@ -259,6 +279,8 @@ def usage(mode):
 		print ('\tcreate ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Create the repository ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\tclone ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Clone the repository ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\tclone ' + setcolor("blue") + 'user repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Clone the repository ' + setcolor("blue") + 'repo' + setcolor("green") + ' of ' + setcolor("blue") + 'user' + setcolor(""))
+		print ('\tlink ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Link the current directory with ' + setcolor("blue") + 'repo' + setcolor(""))
+		print ('\tlink ' + setcolor("blue") + 'user repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Link the current directory with ' + setcolor("blue") + 'repo' + setcolor("green") + ' of ' + setcolor("blue") + 'user' + setcolor(""))
 		print ('\tinfo ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Get the repository ' + setcolor("blue") + 'info' + setcolor("green") + ' metadata' + setcolor(""))
 		print ('\tgetacl ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Get the acls set for the repository ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\tlist\t\t\t\t--' + setcolor("green") + ' List the repositories created' + setcolor(""))
@@ -295,7 +317,7 @@ def usage(mode):
 		print ('\tEPITECH_LOGIN\t\t\t-- ' + setcolor("green") + 'Your login' + setcolor(""))
 		print ('\tEPITECH_TOKEN\t\t\t-- ' + setcolor("green") + 'Your UNIX password in SHA512' + setcolor(""))
 		print ('\tEPITECH_FOLDER\t\t\t-- ' + setcolor("green") + 'Your work folder' + setcolor(""))
-	setcolor("")
+	print (setcolor(""))
 	sys.exit(1)
 
 if __name__ == "__main__":
