@@ -51,6 +51,7 @@ Environment variables :
 * Repository mode
 ````
 Commands :
+    new repo                    -- Create and clone the repository repo
     create repo                 -- Create the repository repo
     clone repo                  -- Clone the repository repo
     clone user repo             -- Clone the repository repo of user
@@ -76,6 +77,9 @@ Commands :
 
 ## Changelogs
 
+* v0.5
+    * Add "repository new" to create, set the ACL ans clone a repository
+
 * v0.4
     * Add "repository link" to link your current directory with a repository (Yours or someone else's, if you have the ACL)
 
@@ -100,6 +104,5 @@ Commands :
 
 ## TODO
 
-* WIP : Integration of [Epidepot](https://github.com/Shakarang/epidepot)
 * Add explicit error output for subprocess.check_output ("repository clone / link")
 * Add a "search" mode for the list of repository
