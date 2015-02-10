@@ -59,9 +59,12 @@ Commands :
     link repo                   -- Link the current directory with repo
     link user repo              -- Link the current directory with repo
     info repo                   -- Get the repository metadata
-    getacl repo                 -- Get the acls set for the repository
     list                        -- List the repositories created
     list text                   -- List the repositories created containing text
+    backup repo                 -- Backup the repository repo of user
+    backup user repo            -- Backup the repository repo
+    backupall                   -- Backup all your repositories
+    getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for "user" on "repo"
                                 ACL format:
                                 r for read
@@ -90,6 +93,12 @@ Commands :
 ````
 
 ## Changelogs
+
+* v0.8
+    * Add "repository backup" mode
+        * "repository backup repo" of "repository backup user repo" to save a (sharred) repository
+        * "repository backupall" to save all your repositories
+    * Catch "CTRL+C" when a command is too long or if you want to stop a command
 
 * v0.7
     * Add "search mode" for "repository list"
