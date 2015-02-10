@@ -61,8 +61,8 @@ Commands :
     info repo                   -- Get the repository metadata
     list                        -- List the repositories created
     list text                   -- List the repositories created containing text
-    backup repo                 -- Backup the repository repo of user
-    backup user repo            -- Backup the repository repo
+    backup repo                 -- Backup the repository repo
+    backup user repo            -- Backup the repository repo of user
     backupall                   -- Backup all your repositories
     getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for "user" on "repo"
