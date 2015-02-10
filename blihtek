@@ -10,9 +10,10 @@ import json
 import getpass
 import subprocess
 import ntpath
+import re
 
 versionBLIH = 1.7
-versionBLIHTEK = 0.6
+versionBLIHTEK = 0.7
 
 class blih:
 	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(versionBLIH) + '-linux'):
@@ -88,12 +89,13 @@ class blih:
 
 	def repo_list(self):
 		status, reason, headers, data = self.request('/repositories', method='GET')
-		result = [];
-		for i in data['repositories']:
-			result.append(i)
-		result.sort()
-		for i in result:
-			print (setcolor("green") + i + setcolor(""))
+		return data['repositories']
+		# result = [];
+		# for i in data['repositories']:
+		# 	result.append(i)
+		# result.sort()
+		# for i in result:
+		# 	print (setcolor("green") + i + setcolor(""))
 
 	def repo_delete(self, name):
 		status, reason, headers, data = self.request('/repository/' + name, method='DELETE')
@@ -139,6 +141,30 @@ class blih:
 		print (setcolor("green") + data['message'] + setcolor(""))
 
 class blihtek:
+	def repo_list(blih):
+		data = blih.repo_list()
+		result = [];
+		for i in data:
+			result.append(i)
+		result.sort()
+		for i in result:
+			print (setcolor("green") + i + setcolor(""))
+
+	def repo_list_match(blih, text):
+		data = blih.repo_list()
+		regex = re.compile(str('^[\S\s]*' + text + '[\S\s]*$'))
+		result = [];
+		anyMatch = True
+		for i in data:
+			result.append(i)
+		result.sort()
+		for i in result:
+			if regex.match(i):
+				anyMatch = False
+				print (setcolor("green") + i + setcolor(""))
+		if anyMatch:
+			print (setcolor("red") + "There is no repositories containing " + setcolor("blue") + text + setcolor(""))
+
 	def repo_clone(user, login, repo, folder):
 		command = "git clone " + user + "@git.epitech.eu:/" + login + "/" + repo + " " + folder + "/" + repo
 		try:
@@ -215,10 +241,13 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 		else:
 			usage("repo")
 	elif args[0] == 'list':
-		if len(args) != 1:
-			usage("repo")
 		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
-		handle.repo_list()
+		if len(args) == 1:
+			blihtek.repo_list(handle)
+		elif len(args) == 2:
+			blihtek.repo_list_match(handle, args[1])
+		else:
+			usage("repo")
 	elif args[0] == 'info':
 		if len(args) != 2:
 			usage("repo")
@@ -319,12 +348,11 @@ def setcolor(color):
 	else:
 		return ""
 
-def usage(mode):
+def usage(mode = ""):
 	name = ntpath.basename(sys.argv[0])
 	if mode == "repo":
 		print (setcolor("red") + 'Usage: ' + name + ' [options] repository command ...')
-		print (setcolor(""))
-		print ('Commands :')
+		print (setcolor("") + '\nCommands :')
 		print ('\tnew ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Create and clone the repository ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\tcreate ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Create the repository ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\tclone ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Clone the repository ' + setcolor("blue") + 'repo' + setcolor(""))
@@ -334,6 +362,7 @@ def usage(mode):
 		print ('\tinfo ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Get the repository ' + setcolor("blue") + 'info' + setcolor("green") + ' metadata' + setcolor(""))
 		print ('\tgetacl ' + setcolor("blue") + 'repo' + setcolor("") + '\t\t\t--' + setcolor("green") + ' Get the acls set for the repository ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\tlist\t\t\t\t--' + setcolor("green") + ' List the repositories created' + setcolor(""))
+		print ('\tlist ' + setcolor("blue") + 'text' + setcolor("") + '\t\t\t--' + setcolor("green") + ' List the repositories created containing ' + setcolor("blue") + 'text' + setcolor(""))
 		print ('\tsetacl ' + setcolor("blue") + 'repo user acl' + setcolor("") + '\t\t--' + setcolor("green") + ' Set (or remove) an acl for ' + setcolor("blue") + 'user' + setcolor("green") + ' on ' + setcolor("blue") + 'repo' + setcolor(""))
 		print ('\t\t\t\t\tACL format:')
 		print ('\t\t\t\t\t' + setcolor("blue") + 'r' + setcolor("") + ' for ' + setcolor("green") + 'read' + setcolor(""))
@@ -341,15 +370,13 @@ def usage(mode):
 		print ('\t\t\t\t\t' + setcolor("blue") + 'a' + setcolor("") + ' for ' + setcolor("green") + 'admin' + setcolor(""))
 	elif mode == "ssh":
 		print (setcolor("red") + 'Usage: ' + name + ' [options] sshkey command ...')
-		print (setcolor(""))
-		print ('Commands :')
+		print (setcolor("") + '\nCommands :')
 		print ('\tupload ' + setcolor("blue") + 'file' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Upload a new ssh-key' + setcolor(""))
 		print ('\tlist\t\t\t\t-- ' + setcolor("green") + 'List the ssh-keys' + setcolor(""))
 		print ('\tdelete ' + setcolor("blue") + 'sshkey' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Delete the sshkey with comment ' + setcolor("blue") + 'sshkey' + setcolor(""))
 	elif mode == "config":
 		print (setcolor("red") + 'Usage: ' + name + ' [options] config command ...')
-		print (setcolor(""))
-		print ('Commands :')
+		print (setcolor("") + '\nCommands :')
 		print ('\tcrypt ' + '\t\t\t\t-- ' + setcolor("green") + 'Crypt your password in SHA512 for ' + setcolor("blue") + 'EPITECH_TOKEN' + setcolor(""))
 		print ('\tdisp ' + '\t\t\t\t-- ' + setcolor("green") + 'Display all the values of blihtek variables' + setcolor(""))
 		print ('\tdisp ' + setcolor("blue") + 'variable' + setcolor("") + '\t\t\t-- ' + setcolor("green") + 'Display the value of blihtek ' + setcolor("blue") + 'variable' + setcolor(""))
@@ -359,8 +386,7 @@ def usage(mode):
 		print ('\t\t\t\t\t' + setcolor("blue") + 'folder' + setcolor("") + ' for ' + setcolor("green") + 'EPITECH_FOLDER' + setcolor(""))
 	else:
 		print (setcolor("red") + 'Usage: ' + name + ' [options] command ...')
-		print (setcolor(""))
-		print ('Global Options :')
+		print (setcolor("") + '\nGlobal Options :')
 		print ('\t-u ' + setcolor("blue") + 'user' + setcolor("") + ' | --user=' + setcolor("blue") + 'user' + setcolor("") + '\t\t-- ' + setcolor("green") + 'Run as ' + setcolor("blue") + 'user' + setcolor(""))
 		print ('\t-f ' + setcolor("blue") + 'folder' + setcolor("") + ' | --folder=' + setcolor("blue") + 'folder' + setcolor("") + '\t-- ' + setcolor("green") + 'Execute in ' + setcolor("blue") + 'folder' + setcolor(""))
 		print ('\t-v | --verbose\t\t\t-- ' + setcolor("green") + 'Verbose' + setcolor(""))
@@ -368,14 +394,12 @@ def usage(mode):
 		print ('\t-b ' + setcolor("blue") + 'url' + setcolor("") + ' | --baseurl=' + setcolor("blue") + 'url' + setcolor("") + '\t\t-- ' + setcolor("green") + 'Base URL for BLIH' + setcolor(""))
 		print ('\t-t ' + setcolor("blue") + 'token' + setcolor("") + ' | --token ' + setcolor("blue") + 'token' + setcolor("") + '\t-- ' + setcolor("green") + 'Specify token in the cmdline' + setcolor(""))
 		print ('\t-V | --version\t\t\t-- ' + setcolor("green") + 'Version' + setcolor(""))
-		print ()
-		print ('Commands :')
+		print ('\nCommands :')
 		print ('\trepository\t\t\t-- ' + setcolor("green") + 'Repository management' + setcolor(""))
 		print ('\tsshkey\t\t\t\t-- ' + setcolor("green") + 'SSH-KEYS management' + setcolor(""))
 		print ('\twhoami\t\t\t\t-- ' + setcolor("green") + 'Print who you are' + setcolor(""))
 		print ('\tconfig\t\t\t\t-- ' + setcolor("green") + 'Modify blihtek configuration' + setcolor(""))
-		print ()
-		print ('Environment variables :')
+		print ('\nEnvironment variables :')
 		print ('\tEPITECH_LOGIN\t\t\t-- ' + setcolor("green") + 'Your login' + setcolor(""))
 		print ('\tEPITECH_TOKEN\t\t\t-- ' + setcolor("green") + 'Your UNIX password in SHA512' + setcolor(""))
 		print ('\tEPITECH_FOLDER\t\t\t-- ' + setcolor("green") + 'Your work folder' + setcolor(""))
@@ -395,12 +419,13 @@ if __name__ == "__main__":
 	token = None
 	user_agent = 'blih-' + str(versionBLIH)
 	folder = os.getenv('PWD')
+	otherUser = False
 	global colors
 	colors = True
 
 	for o, a in opts:
 		if o in ('-h', '--help'):
-			usage("")
+			usage()
 		elif o in ('-f', '--folder'):
 			folder = a
 		elif o in ('-v', '--verbose'):
@@ -408,7 +433,7 @@ if __name__ == "__main__":
 		elif o in ('-c', '--nocolor'):
 			colors = False
 		elif o in ('-u', '--user'):
-			print ("user:" + a)
+			otherUser = True
 			user = a
 		elif o in ('-b', '--baseurl'):
 			baseurl = a
@@ -419,20 +444,20 @@ if __name__ == "__main__":
 		elif o in ('-U', '--useragent'):
 			user_agent = a
 		else:
-			usage("")
+			usage()
 
 	if len(args) == 0:
-		usage("")
+		usage()
 
 	if user == None:
 		if os.getenv("EPITECH_LOGIN") != None and os.getenv("EPITECH_LOGIN") != "":
 			user = os.getenv("EPITECH_LOGIN")
 		else:
 			user = getpass.getuser()
-	if token == None:
-		if args[0] == 'config' and args[1] == 'crypt':
+	if token == None or otherUser == True:
+		if len(args) == 2 and args[0] == 'config' and args[1] == 'crypt' and otherUser == False:
 			token = ""
-		if os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "":
+		elif os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "" and otherUser == False:
 			token = bytes(os.getenv("EPITECH_TOKEN"), 'utf8')
 		else:
 			token = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor("")), 'utf8')).hexdigest(), 'utf8')
@@ -446,4 +471,4 @@ if __name__ == "__main__":
 	elif args[0] == 'config':
 		config(args[1:], baseurl, user, token, verbose, folder, user_agent)
 	else:
-		usage("")
+		usage()

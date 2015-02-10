@@ -61,6 +61,7 @@ Commands :
     info repo                   -- Get the repository metadata
     getacl repo                 -- Get the acls set for the repository
     list                        -- List the repositories created
+    list text                   -- List the repositories created containing text
     setacl repo user acl        -- Set (or remove) an acl for "user" on "repo"
                                 ACL format:
                                 r for read
@@ -89,6 +90,10 @@ Commands :
 ````
 
 ## Changelogs
+
+* v0.7
+    * Add "search mode" for "repository list"
+        * You can use "repository list text" to display all the repositories containing text
 
 * v0.6
     * Add "config" mode
@@ -124,4 +129,3 @@ Commands :
 ## TODO
 
 * Add explicit error output for subprocess.check_output ("repository clone / link")
-* Add a "search" mode for the list of repository
