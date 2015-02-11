@@ -94,4 +94,4 @@ Commands :
 
 ## Changelogs
 
-[Available here](https://github.com/hug33k/blihtek/blob/master/CHANGELOGS)
+[Available here](https://github.com/hug33k/blihtek/blob/master/CHANGELOGS.md)
