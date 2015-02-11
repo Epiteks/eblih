@@ -40,7 +40,3 @@
     * Add colors to output
     * Add "-c | --nocolor" option
     * Set automaticaly the ACL "read" to ramassage-tek when you create a repository
-
-## TODO
-
-* Add explicit error output for subprocess.check_output ("repository clone / link")
