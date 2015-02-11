@@ -26,12 +26,12 @@ class blih:
 		else:
 			self.token_calc()
 		if user == None:
-			if sys.stdin.isatty():
-            			user = getpass.getuser()
-        		else:
-		            	user = sys.stdin.readline().rstrip()
+                        if sys.stdin.isatty():
+                                user = getpass.getuser()
+                        else:
+                                user = sys.stdin.readline().rstrip()
 
-			self._user = getpass.getuser()
+                        self._user = getpass.getuser()
 		else:
 			self._user = user
 		self._verbose = verbose
@@ -46,11 +46,11 @@ class blih:
 	token = property(token_get, token_set)
 
 	def token_calc(self):
-		if sys.stdin.isatty():
-            		password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
-        	else:
-            		password = sys.stdin.readline().rstrip()
-		self._token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
+                if sys.stdin.isatty():
+                        password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+                else:
+                        password = sys.stdin.readline().rstrip()
+                self._token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 
 	def sign_data(self, data=None):
 		signature = hmac.new(self._token, msg=bytes(self._user, 'utf8'), digestmod=hashlib.sha512)
@@ -90,7 +90,7 @@ class blih:
 			return (f.status, f.reason, f.info(), data)
 
 		print (setcolor("red") + 'Unknown error' + setcolor())
-		sys.exit(1)g
+		sys.exit(1)
 
 	def repo_create(self, name, type='git', description=None):
 		data = {'name' : name, 'type' : type}
@@ -252,13 +252,13 @@ class blihtek:
 		print (setcolor("green") + "Backup finished" + setcolor())
 
 	def conf_crypt():
-		if sys.stdin.isatty():
-            		password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
-        	else:
-            		password = sys.stdin.readline().rstrip()
+                if sys.stdin.isatty():
+                        password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+                else:
+                        password = sys.stdin.readline().rstrip()
 
-		token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
-		print(token.decode("utf-8"))
+                token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
+                print(token.decode("utf-8"))
 
 	def conf_disp(variable):
 		if variable == "login":
