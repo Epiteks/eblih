@@ -35,12 +35,11 @@ class blih:
 		else:
 			self.token_calc()
 		if user == None:
-                        if sys.stdin.isatty():
-                                user = getpass.getuser()
-                        else:
-                                user = sys.stdin.readline().rstrip()
-
-                        self._user = getpass.getuser()
+			if sys.stdin.isatty():
+				user = getpass.getuser()
+			else:
+				user = sys.stdin.readline().rstrip()
+			self._user = getpass.getuser()
 		else:
 			self._user = user
 		self._verbose = verbose
@@ -64,11 +63,11 @@ class blih:
 	token = property(token_get, token_set)
 
 	def token_calc(self):
-                if sys.stdin.isatty():
-                        password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
-                else:
-                        password = sys.stdin.readline().rstrip()
-                self._token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
+		if sys.stdin.isatty():
+			password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+		else:
+			password = sys.stdin.readline().rstrip()
+		self._token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 
 	def sign_data(self, data=None):
 		signature = hmac.new(self._token, msg=bytes(self._user, 'utf8'), digestmod=hashlib.sha512)
@@ -316,13 +315,12 @@ class blihtek:
 	# 	 \______/  \______/ |__/  \__/|__/
 
 	def conf_crypt():
-                if sys.stdin.isatty():
-                        password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
-                else:
-                        password = sys.stdin.readline().rstrip()
-
-                token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
-                print(token.decode("utf-8"))
+		if sys.stdin.isatty():
+			password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+		else:
+			password = sys.stdin.readline().rstrip()
+		token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
+		print(token.decode("utf-8"))
 
 	def conf_disp(variable):
 		if variable == "login":
@@ -654,7 +652,7 @@ if __name__ == "__main__":
 		else:
 			user = getpass.getuser()
 	if token == None or otherUser == True:
-		if len(args) == 2 and args[0] == 'config' and args[1] == 'crypt' and otherUser == False:
+		if len(args) >= 1 and args[0] == 'config' and otherUser == False:
 			token = ""
 		elif os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "" and otherUser == False:
 			token = bytes(os.getenv("EPITECH_TOKEN"), 'utf8')
