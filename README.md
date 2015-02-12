@@ -95,3 +95,7 @@ Commands :
 ## Changelogs
 
 [Available here](https://github.com/hug33k/blihtek/blob/master/CHANGELOGS.md)
+
+## TODO
+
+* Add explicit error output for subprocess.check_output ("repository clone / link")
