@@ -550,7 +550,12 @@ if __name__ == "__main__":
 		elif os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "" and otherUser == False:
 			token = bytes(os.getenv("EPITECH_TOKEN"), 'utf8')
 		else:
-			token = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor()), 'utf8')).hexdigest(), 'utf8')
+			if sys.stdin.isatty():
+				password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+			else:
+				password = sys.stdin.readline().rstrip()
+
+			token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 
 	if args[0] == 'repository':
 		repository(args[1:], baseurl, user, token, verbose, folder, user_agent)
