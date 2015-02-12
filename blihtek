@@ -35,7 +35,12 @@ class blih:
 		else:
 			self.token_calc()
 		if user == None:
-			self._user = getpass.getuser()
+                        if sys.stdin.isatty():
+                                user = getpass.getuser()
+                        else:
+                                user = sys.stdin.readline().rstrip()
+
+                        self._user = getpass.getuser()
 		else:
 			self._user = user
 		self._verbose = verbose
@@ -59,7 +64,11 @@ class blih:
 	token = property(token_get, token_set)
 
 	def token_calc(self):
-		self._token = bytes(hashlib.sha512(bytes(getpass.getpass(), 'utf8')).hexdigest(), 'utf8')
+                if sys.stdin.isatty():
+                        password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+                else:
+                        password = sys.stdin.readline().rstrip()
+                self._token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 
 	def sign_data(self, data=None):
 		signature = hmac.new(self._token, msg=bytes(self._user, 'utf8'), digestmod=hashlib.sha512)
@@ -307,8 +316,13 @@ class blihtek:
 	# 	 \______/  \______/ |__/  \__/|__/
 
 	def conf_crypt():
-		token = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor()), 'utf8')).hexdigest(), 'utf8')
-		print(token.decode("utf-8"))
+                if sys.stdin.isatty():
+                        password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+                else:
+                        password = sys.stdin.readline().rstrip()
+
+                token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
+                print(token.decode("utf-8"))
 
 	def conf_disp(variable):
 		if variable == "login":
@@ -645,7 +659,12 @@ if __name__ == "__main__":
 		elif os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "" and otherUser == False:
 			token = bytes(os.getenv("EPITECH_TOKEN"), 'utf8')
 		else:
-			token = bytes(hashlib.sha512(bytes(getpass.getpass(setcolor("green") + 'Your password :' + setcolor()), 'utf8')).hexdigest(), 'utf8')
+			if sys.stdin.isatty():
+				password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+			else:
+				password = sys.stdin.readline().rstrip()
+
+			token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 
 	if args[0] == 'repository':
 		repository(args[1:], baseurl, user, token, verbose, folder, user_agent)
