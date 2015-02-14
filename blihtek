@@ -16,7 +16,7 @@ import time
 import signal
 
 versionBLIH = 1.7
-versionBLIHTEK = 0.8
+versionBLIHTEK = 1.0
 
 # 	 /$$$$$$$  /$$       /$$$$$$ /$$   /$$
 # 	| $$__  $$| $$      |_  $$_/| $$  | $$
@@ -140,7 +140,7 @@ class blih:
 	def repo_setacl(self, name, acluser, acl):
 		data = {'user' : acluser, 'acl' : acl}
 		status, reason, headers, data = self.request('/repository/' + name + '/acls', method='POST', data=data)
-		print (setcolor("green") + data['message'] + setcolor())
+		print (setcolor("green") + data['message'] + " for " + setcolor("blue") + acluser + setcolor())
 
 	def repo_getacl(self, name):
 		status, reason, headers, data = self.request('/repository/' + name + '/acls', method='GET')
@@ -194,7 +194,34 @@ class blihtek:
 	def signal_handler(signal, frame):
 		print(setcolor("red") + 'Quit...' + setcolor())
 		shutil.rmtree("/tmp/blihtek", ignore_errors=True)
-		sys.exit(0)
+		sys.exit(1)
+
+	def read_config_file():
+		filename = os.getenv('HOME') + "/.blihtek"
+		if os.path.isfile(filename) == False:
+			result = {}
+			return (result)
+		with open(filename, 'r') as f:
+			fileContent = f.read()
+		if fileContent == "":
+			result = {}
+		else:
+			try:
+				result = json.loads(fileContent)
+			except Exception as e:
+				print(setcolor("red") + "JSON invalid" + setcolor())
+				sys.exit(1)
+		return (result)
+
+	def write_config_file(fileData):
+		filename = os.getenv('HOME') + "/.blihtek"
+		try:
+			result = json.dumps(fileData)
+		except Exception as e:
+			print(setcolor("red") + "JSON invalid" + setcolor())
+			sys.exit(1)
+		with open(filename, 'w') as f:
+			fileContent = f.write(result)
 
 	# 	 /$$$$$$$  /$$$$$$$$ /$$$$$$$   /$$$$$$
 	# 	| $$__  $$| $$_____/| $$__  $$ /$$__  $$
@@ -235,20 +262,20 @@ class blihtek:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
 		except Exception:
 			print (setcolor("red") + "Error with repository" + setcolor())
-			sys.exit(0)
+			sys.exit(1)
 		print (setcolor("green") + "Repository cloned" + setcolor())
 
 	def repo_link(user, login, repo, folder):
 		if os.path.isdir(folder) == False:
 			print (setcolor("red") + "Folder does not exist" + setcolor())
-			sys.exit(0)
+			sys.exit(1)
 		pwd_save = os.getenv('PWD')
 		command = "cd " + folder + "&& git init && git remote add origin " + user + "@git.epitech.eu:/" + login + "/" + repo + "&& cd " + pwd_save
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
 		except Exception:
 			print (setcolor("red") + "Error with repository" + setcolor())
-			sys.exit(0)
+			sys.exit(1)
 		print (setcolor("green") + "Repository linked" + setcolor())
 
 	def repo_bkup(user, login, repo, folder):
@@ -261,14 +288,14 @@ class blihtek:
 		except Exception:
 			print (setcolor("red") + "Error with repository" + setcolor())
 			shutil.rmtree(dirBase, ignore_errors=True)
-			sys.exit(0)
+			sys.exit(1)
 		command = "cd " + dirBase + " && tar cfz " + "../backup.tgz *"
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
 		except Exception:
 			print (setcolor("red") + "Error with tar" + setcolor())
 			shutil.rmtree(dirBase, ignore_errors=True)
-			sys.exit(0)
+			sys.exit(1)
 		shutil.rmtree(dirBase, ignore_errors=True)
 		shutil.move("/tmp/backup.tgz", folder)
 		print (setcolor("green") + "Backup finished" + setcolor())
@@ -293,17 +320,80 @@ class blihtek:
 			except Exception:
 				print (setcolor("red") + "Error with repository" + setcolor())
 				shutil.rmtree(dirBase, ignore_errors=True)
-				sys.exit(0)
+				sys.exit(1)
 		command = "cd " + dirBase + " && tar cfz " + "../backup.tgz *"
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
 		except Exception:
 			print (setcolor("red") + "Error with tar" + setcolor())
 			shutil.rmtree(dirBase, ignore_errors=True)
-			sys.exit(0)
+			sys.exit(1)
 		shutil.rmtree(dirBase, ignore_errors=True)
 		shutil.move("/tmp/backup.tgz", folder)
 		print (setcolor("green") + "Backup finished" + setcolor())
+
+	#GROUP
+
+	def grup_create(name):
+		fileData = blihtek.read_config_file()
+		userList = []
+		if (name in fileData):
+			print(setcolor("red") + "Group " + setcolor("blue") + name + setcolor("red") + " already exists" + setcolor())
+		else:
+			fileData[name] = userList
+			blihtek.write_config_file(fileData)
+			print (setcolor("green") + "Group " + setcolor("blue") + name + setcolor("green") + " created" + setcolor())
+
+	def grup_add(name, user):
+		fileData = blihtek.read_config_file()
+		if (name in fileData):
+			if (user in fileData[name]):
+				print (setcolor("red") + "User " + setcolor("blue") + user + setcolor("red") + " already exists" + setcolor())
+			else:
+				fileData[name].append(user)
+				blihtek.write_config_file(fileData)
+				print (setcolor("green") + "User " + setcolor("blue") + user + setcolor("green") + " added" + setcolor())
+		else:
+			print(setcolor("red") + "Group not found" + setcolor())
+
+	def grup_rm(name):
+		fileData = blihtek.read_config_file()
+		if name in fileData:
+			fileData.pop(name)
+			blihtek.write_config_file(fileData)
+			print (setcolor("green") + "Group removed" + setcolor())
+		else:
+			print (setcolor("red") + "Group not found" + setcolor())
+
+	def grup_rmuser(name, user):
+		fileData = blihtek.read_config_file()
+		if name in fileData:
+			if user in fileData[name]:
+				fileData[name].remove(user)
+				blihtek.write_config_file(fileData)
+				print (setcolor("green") + "User removed" + setcolor())
+			else:
+				print (setcolor("red") + "User not found" + setcolor())
+		else:
+			print (setcolor("red") + "Group not found" + setcolor())
+
+	def grup_list(name = ""):
+		fileData = blihtek.read_config_file()
+		if name != "":
+			if name in fileData:
+				group = fileData[name]
+				print (setcolor("green") + "Group " + setcolor("blue") + name + setcolor())
+				for user in group:
+					print (setcolor("green") + "\t" + user + setcolor())
+			else:
+				print (setcolor("red") + "Group not found" + setcolor())
+		else:
+			groups = []
+			for item in fileData:
+				groups.append(item)
+			groups.sort()
+			for item in groups:
+				print (setcolor("green") + item + setcolor())
 
 	# 	  /$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$$
 	# 	 /$$__  $$ /$$__  $$| $$$ | $$| $$_____/
@@ -406,7 +496,13 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 		else:
 			acl = args[3]
 		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
-		handle.repo_setacl(args[1], args[2], acl)
+		fileData = blihtek.read_config_file()
+		if args[2] in fileData:
+			group = fileData[args[2]]
+			for user in group:
+				handle.repo_setacl(args[1], user, acl)
+		else:
+			handle.repo_setacl(args[1], args[2], acl)
 	elif args[0] == 'getacl':
 		if len(args) != 2:
 			usage("repo")
@@ -492,6 +588,49 @@ def config(args, baseurl, user, token, verbose, folder, user_agent):
 	else:
 		usage("config")
 
+#GROUP
+
+def group(args, baseurl, user, token, verbose, folder, user_agent):
+	if len(args) == 0:
+		usage("group")
+	if args[0] == 'create':
+		if len(args) >= 2:
+			blihtek.grup_create(args[1])
+			if len(args) > 2:
+				i = 2
+				while i < len(args):
+					blihtek.grup_add(args[1], args[i])
+					i += 1
+		else:
+			usage("group")
+	elif args[0] == 'add':
+		if len(args) > 2:
+			i = 2
+			while i < len(args):
+				blihtek.grup_add(args[1], args[i])
+				i += 1
+		else:
+			usage("group")
+	elif args[0] == 'remove':
+		if len(args) == 2:
+			blihtek.grup_rm(args[1])
+		elif len(args) > 2:
+			i = 2
+			while i < len(args):
+				blihtek.grup_rmuser(args[1], args[i])
+				i += 1
+		else:
+			usage("group")
+	elif args[0] == 'list':
+		if len(args) == 1:
+			blihtek.grup_list()
+		elif len(args) == 2:
+			blihtek.grup_list(args[1])
+		else:
+			usage("group")
+	else:
+		usage("group")
+
 def version():
 	lastVersion = urllib.request.urlopen('https://raw.githubusercontent.com/hug33k/blihtek/master/.version').read().decode('utf-8').replace('\n', '')
 	if lastVersion <= str(versionBLIHTEK):
@@ -505,7 +644,7 @@ def version():
 	else:
 		print (setcolor("blue") + 'blihtek\t' + setcolor("red") + str(versionBLIHTEK))
 		print (setcolor("red") + 'An update is available ' + setcolor("green") + '(' + lastVersion + ')' + setcolor())
-	sys.exit(0)
+	sys.exit(1)
 
 def setcolor(color = ""):
 	if colors == True:
@@ -546,8 +685,8 @@ def usage(mode = ""):
 		print ('\tbackup ' + setcolor("blue") + 'repo' + setcolor() + '\t\t\t--' + setcolor("green") + ' Backup the repository ' + setcolor("blue") + 'repo' + setcolor())
 		print ('\tbackup ' + setcolor("blue") + 'user repo' + setcolor() + '\t\t--' + setcolor("green") + ' Backup the repository ' + setcolor("blue") + 'repo' + setcolor("green") + ' of ' + setcolor("blue") + 'user' + setcolor())
 		print ('\tbackupall\t\t\t--' + setcolor("green") + ' Backup all your repositories' + setcolor())
-		print ('\tsetacl ' + setcolor("blue") + 'repo user acl' + setcolor() + '\t\t--' + setcolor("green") + ' Set (or remove) an acl for ' + setcolor("blue") + 'user' + setcolor("green") + ' on ' + setcolor("blue") + 'repo' + setcolor())
 		print ('\tgetacl ' + setcolor("blue") + 'repo' + setcolor() + '\t\t\t--' + setcolor("green") + ' Get the acls set for the repository ' + setcolor("blue") + 'repo' + setcolor())
+		print ('\tsetacl ' + setcolor("blue") + 'repo user acl' + setcolor() + '\t\t--' + setcolor("green") + ' Set (or remove) an acl for ' + setcolor("blue") + 'user' + setcolor("green") + ' on ' + setcolor("blue") + 'repo' + setcolor())
 		print ('\t\t\t\t\tACL format:')
 		print ('\t\t\t\t\t' + setcolor("blue") + 'r' + setcolor() + ' for ' + setcolor("green") + 'read' + setcolor())
 		print ('\t\t\t\t\t' + setcolor("blue") + 'w' + setcolor() + ' for ' + setcolor("green") + 'write' + setcolor())
@@ -568,6 +707,16 @@ def usage(mode = ""):
 		print ('\t\t\t\t\t' + setcolor("blue") + 'login' + setcolor() + '  for ' + setcolor("green") + 'EPITECH_LOGIN' + setcolor())
 		print ('\t\t\t\t\t' + setcolor("blue") + 'token' + setcolor() + '  for ' + setcolor("green") + 'EPITECH_TOKEN' + setcolor())
 		print ('\t\t\t\t\t' + setcolor("blue") + 'folder' + setcolor() + ' for ' + setcolor("green") + 'EPITECH_FOLDER' + setcolor())
+	elif mode == "group":
+		print (setcolor("red") + 'Usage: ' + name + ' [options] config command ...')
+		print (setcolor() + '\nCommands :')
+		print ('\tcreate ' + setcolor("blue") + 'name' + setcolor() + '\t\t\t-- ' + setcolor("green") + 'Create the group ' + setcolor("blue") + 'name' + setcolor())
+		print ('\tcreate ' + setcolor("blue") + 'name users' + setcolor() + '\t\t-- ' + setcolor("green") + 'Create the group ' + setcolor("blue") + 'name' + setcolor("green") + ' with ' + setcolor("blue") + 'users' + setcolor("green") + ' (one or more)' + setcolor())
+		print ('\tadd ' + setcolor("blue") + 'name users' + setcolor() + '\t\t\t-- ' + setcolor("green") + 'Add ' + setcolor("blue") + 'users' + setcolor("green") + ' (one or more) to the group ' + setcolor("blue") + 'name' + setcolor())
+		print ('\tremove ' + setcolor("blue") + 'name' + setcolor() + '\t\t\t-- ' + setcolor("green") + 'Remove the group ' + setcolor("blue") + 'name' + setcolor())
+		print ('\tremove ' + setcolor("blue") + 'name users' + setcolor() + '\t\t-- ' + setcolor("green") + 'Remove ' + setcolor("blue") + 'users' + setcolor("green") + ' (one or more) from the group ' + setcolor("blue") + 'name' + setcolor())
+		print ('\tlist ' + setcolor() + '\t\t\t\t-- ' + setcolor("green") + 'List the groups' + setcolor())
+		print ('\tlist ' + setcolor("blue") + 'name' + setcolor() + '\t\t\t-- ' + setcolor("green") + 'List the users in the group ' + setcolor("blue") + 'name' + setcolor())
 	else:
 		print (setcolor("red") + 'Usage: ' + name + ' [options] command ...')
 		print (setcolor() + '\nGlobal Options :')
@@ -580,6 +729,7 @@ def usage(mode = ""):
 		print ('\t-V | --version\t\t\t-- ' + setcolor("green") + 'Version' + setcolor())
 		print ('\nCommands :')
 		print ('\trepository\t\t\t-- ' + setcolor("green") + 'Repository management' + setcolor())
+		print ('\tgroup\t\t\t\t-- ' + setcolor("green") + 'Group management' + setcolor())
 		print ('\tsshkey\t\t\t\t-- ' + setcolor("green") + 'SSH-KEYS management' + setcolor())
 		print ('\twhoami\t\t\t\t-- ' + setcolor("green") + 'Print who you are' + setcolor())
 		print ('\tconfig\t\t\t\t-- ' + setcolor("green") + 'Modify blihtek configuration' + setcolor())
@@ -652,7 +802,7 @@ if __name__ == "__main__":
 		else:
 			user = getpass.getuser()
 	if token == None or otherUser == True:
-		if len(args) >= 1 and args[0] == 'config' and otherUser == False:
+		if len(args) >= 1 and (args[0] == 'config' or args[0] == 'group'):
 			token = ""
 		elif os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "" and otherUser == False:
 			token = bytes(os.getenv("EPITECH_TOKEN"), 'utf8')
@@ -666,6 +816,8 @@ if __name__ == "__main__":
 
 	if args[0] == 'repository':
 		repository(args[1:], baseurl, user, token, verbose, folder, user_agent)
+	elif args[0] == 'group':
+		group(args[1:], baseurl, user, token, verbose, folder, user_agent)
 	elif args[0] == 'sshkey':
 		sshkey(args[1:], baseurl, user, token, verbose, folder, user_agent)
 	elif args[0] == 'whoami':

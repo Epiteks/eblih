@@ -1,5 +1,17 @@
 ## Changelogs
 
+* v1.0
+    * Add "group" mode
+        * You can now use groups to set easily ACLs for your repositories
+        * Availables actions are "create / add / remove / list"
+        * You can check [here](https://github.com/hug33k/blihtek/blob/master/README.md) to see all the commands
+    * Add redirection modes for password (By [pouleta](https://github.com/pouleta))
+        * You can now send your password to blihtek with two other methods
+            ````
+            blihtek command <<< "password"
+            echo "password" | blihtek command
+            ````
+
 * v0.8
     * Add "repository backup" mode
         * "repository backup repo" of "repository backup user repo" to save a (sharred) repository

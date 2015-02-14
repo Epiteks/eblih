@@ -1,8 +1,8 @@
-# blihtek
+# blihtek v1.0
 BLIH simplified for Epitech
 
 ## Thanks
-Thanks to "IONIS Bocal", korovi_o and [Shakarang](https://github.com/Shakarang)
+Thanks to "IONIS Bocal", korovi_o, [shakarang](https://github.com/Shakarang) and [pouleta](https://github.com/pouleta)
 
 ## Before using
 You can set the variables in commandline or in your shell's config file
@@ -26,7 +26,7 @@ sudo cp blihtek /usr/bin/
 
 * General
 ````
-Usage: ./blihtek [options] command ...
+Usage: blihtek [options] command ...
 
 Global Options :
     -u user | --user=user       -- Run as user
@@ -39,6 +39,7 @@ Global Options :
 
 Commands :
     repository                  -- Repository management
+    group                       -- Group management
     sshkey                      -- SSH-KEYS management
     whoami                      -- Print who you are
     config                      -- Modify blihtek configuration
@@ -65,11 +66,24 @@ Commands :
     backup user repo            -- Backup the repository repo of user
     backupall                   -- Backup all your repositories
     getacl repo                 -- Get the acls set for the repository
-    setacl repo user acl        -- Set (or remove) an acl for "user" on "repo"
+    setacl repo user acl        -- Set (or remove) an acl for user on repo
+    setacl repo group acl        -- Set (or remove) an acl for users in group on repo
                                 ACL format:
                                 r for read
                                 w for write
                                 a for admin
+````
+
+* Group mode
+````
+Commands :
+    create name                 -- Create the group name
+    create name users           -- Create the group name with users (one or more)
+    add name users              -- Add users (one or more) to the group name
+    remove name                 -- Remove the group name
+    remove name users           -- Remove users (one or more) from the group name
+    list                        -- List the groups
+    list name                   -- List the users in the group name
 ````
 
 * SSHKey mode
@@ -87,7 +101,7 @@ Commands :
     disp                        -- Display all the values of blihtek variables
     disp variable               -- Display the value of blihtek variable
                                 Variables:
-                                login  for EPITECH_LOGIN
+                                login    for EPITECH_LOGIN
                                 token  for EPITECH_TOKEN
                                 folder for EPITECH_FOLDER
 ````
@@ -98,4 +112,5 @@ Commands :
 
 ## TODO
 
+* Check if user exists into PIE when added into a group
 * Add explicit error output for subprocess.check_output ("repository clone / link")
