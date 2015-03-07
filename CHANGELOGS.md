@@ -1,5 +1,9 @@
 ## Changelogs
 
+* v1.1
+    * Update verbose option
+        * Now with "-v", you can have an explicit output when you have an error on commands who execute shell commands
+
 * v1.0
     * Add "group" mode
         * You can now use groups to set easily ACLs for your repositories

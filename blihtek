@@ -17,6 +17,7 @@ import signal
 
 versionBLIH = 1.7
 versionBLIHTEK = 1.0
+global verbose
 
 # 	 /$$$$$$$  /$$       /$$$$$$ /$$   /$$
 # 	| $$__  $$| $$      |_  $$_/| $$  | $$
@@ -28,7 +29,7 @@ versionBLIHTEK = 1.0
 # 	|_______/ |________/|______/|__/  |__/
 
 class blih:
-	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, verbose=False, user_agent='blih-' + str(versionBLIH) + '-linux'):
+	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, user_agent='blih-' + str(versionBLIH) + '-linux'):
 		self._baseurl = baseurl
 		if token:
 			self._token = token
@@ -210,6 +211,8 @@ class blihtek:
 				result = json.loads(fileContent)
 			except Exception as e:
 				print(setcolor("red") + "JSON invalid" + setcolor())
+				if verbose == True:
+					print(setcolor("red") + str(e) + setcolor())
 				sys.exit(1)
 		return (result)
 
@@ -219,6 +222,8 @@ class blihtek:
 			result = json.dumps(fileData)
 		except Exception as e:
 			print(setcolor("red") + "JSON invalid" + setcolor())
+			if verbose == True:
+				print(setcolor("red") + str(e) + setcolor())
 			sys.exit(1)
 		with open(filename, 'w') as f:
 			fileContent = f.write(result)
@@ -260,8 +265,10 @@ class blihtek:
 		command = "git clone " + user + "@git.epitech.eu:/" + login + "/" + repo + " " + folder + "/" + repo
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-		except Exception:
+		except Exception as e:
 			print (setcolor("red") + "Error with repository" + setcolor())
+			if verbose == True:
+				print(setcolor("red") + str(e) + setcolor())
 			sys.exit(1)
 		print (setcolor("green") + "Repository cloned" + setcolor())
 
@@ -273,8 +280,10 @@ class blihtek:
 		command = "cd " + folder + "&& git init && git remote add origin " + user + "@git.epitech.eu:/" + login + "/" + repo + "&& cd " + pwd_save
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-		except Exception:
+		except Exception as e:
 			print (setcolor("red") + "Error with repository" + setcolor())
+			if verbose == True:
+				print(setcolor("red") + str(e) + setcolor())
 			sys.exit(1)
 		print (setcolor("green") + "Repository linked" + setcolor())
 
@@ -285,15 +294,19 @@ class blihtek:
 		command = "git clone " + user + "@git.epitech.eu:/" + login + "/" + repo + " " + dirBase + "/" + repo
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-		except Exception:
+		except Exception as e:
 			print (setcolor("red") + "Error with repository" + setcolor())
+			if verbose == True:
+				print(setcolor("red") + str(e) + setcolor())
 			shutil.rmtree(dirBase, ignore_errors=True)
 			sys.exit(1)
 		command = "cd " + dirBase + " && tar cfz " + "../backup.tgz *"
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-		except Exception:
+		except Exception as e:
 			print (setcolor("red") + "Error with tar" + setcolor())
+			if verbose == True:
+				print(setcolor("red") + str(e) + setcolor())
 			shutil.rmtree(dirBase, ignore_errors=True)
 			sys.exit(1)
 		shutil.rmtree(dirBase, ignore_errors=True)
@@ -317,22 +330,33 @@ class blihtek:
 			command = "git clone " + user + "@git.epitech.eu:/" + user + "/" + i + " " + dirBase + "/" + i
 			try:
 				res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-			except Exception:
+			except Exception as e:
 				print (setcolor("red") + "Error with repository" + setcolor())
+				if verbose == True:
+					print(setcolor("red") + str(e) + setcolor())
 				shutil.rmtree(dirBase, ignore_errors=True)
 				sys.exit(1)
 		command = "cd " + dirBase + " && tar cfz " + "../backup.tgz *"
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-		except Exception:
+		except Exception as e:
 			print (setcolor("red") + "Error with tar" + setcolor())
+			if verbose == True:
+				print(setcolor("red") + str(e) + setcolor())
 			shutil.rmtree(dirBase, ignore_errors=True)
 			sys.exit(1)
 		shutil.rmtree(dirBase, ignore_errors=True)
 		shutil.move("/tmp/backup.tgz", folder)
 		print (setcolor("green") + "Backup finished" + setcolor())
 
-	#GROUP
+	# 	  /$$$$$$  /$$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$
+	# 	 /$$__  $$| $$__  $$ /$$__  $$| $$  | $$| $$__  $$
+	# 	| $$  \__/| $$  \ $$| $$  \ $$| $$  | $$| $$  \ $$
+	# 	| $$ /$$$$| $$$$$$$/| $$  | $$| $$  | $$| $$$$$$$/
+	# 	| $$|_  $$| $$__  $$| $$  | $$| $$  | $$| $$____/
+	# 	| $$  \ $$| $$  \ $$| $$  | $$| $$  | $$| $$
+	# 	|  $$$$$$/| $$  | $$|  $$$$$$/|  $$$$$$/| $$
+	# 	 \______/ |__/  |__/ \______/  \______/ |__/
 
 	def grup_create(name):
 		fileData = blihtek.read_config_file()
@@ -440,20 +464,20 @@ class blihtek:
 # 	| $$  | $$| $$$$$$$$| $$      |  $$$$$$/
 # 	|__/  |__/|________/|__/       \______/
 
-def repository(args, baseurl, user, token, verbose, folder, user_agent):
+def repository(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("repo")
 	if args[0] == 'new':
 		if len(args) != 2:
 			usage("repo")
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.repo_create(args[1])
 		handle.repo_setacl(args[1], 'ramassage-tek', 'r')
 		blihtek.repo_clone(user, user, args[1], folder)
 	elif args[0] == 'create':
 		if len(args) != 2:
 			usage("repo")
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.repo_create(args[1])
 		handle.repo_setacl(args[1], 'ramassage-tek', 'r')
 	elif args[0] == 'clone':
@@ -471,7 +495,7 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 		else:
 			usage("repo")
 	elif args[0] == 'list':
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		if len(args) == 1:
 			blihtek.repo_list(handle)
 		elif len(args) == 2:
@@ -481,12 +505,12 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 	elif args[0] == 'info':
 		if len(args) != 2:
 			usage("repo")
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.repo_info(args[1])
 	elif args[0] == 'delete':
 		if len(args) != 2:
 			usage("repo")
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.repo_delete(args[1])
 	elif args[0] == 'setacl':
 		if len(args) != 4 and len(args) != 3:
@@ -495,7 +519,7 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 			acl = ''
 		else:
 			acl = args[3]
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		fileData = blihtek.read_config_file()
 		if args[2] in fileData:
 			group = fileData[args[2]]
@@ -506,10 +530,10 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 	elif args[0] == 'getacl':
 		if len(args) != 2:
 			usage("repo")
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.repo_getacl(args[1])
 	elif args[0] == 'backup':
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		if len(args) == 2:
 			blihtek.repo_bkup(user, user, args[1], folder)
 		elif len(args) == 3:
@@ -517,7 +541,7 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 		else:
 			usage("repo")
 	elif args[0] == 'backupall':
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		if len(args) == 1:
 			blihtek.repo_bkupall(handle, user, folder)
 		else:
@@ -534,11 +558,11 @@ def repository(args, baseurl, user, token, verbose, folder, user_agent):
 # 	|  $$$$$$/|  $$$$$$/| $$  | $$| $$ \  $$| $$$$$$$$    | $$
 # 	 \______/  \______/ |__/  |__/|__/  \__/|________/    |__/
 
-def sshkey(args, baseurl, user, token, verbose, folder, user_agent):
+def sshkey(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("ssh")
 	if args[0] == 'list':
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.sshkey_list()
 	elif args[0] == 'upload':
 		key = None
@@ -548,18 +572,18 @@ def sshkey(args, baseurl, user, token, verbose, folder, user_agent):
 			key = args[1]
 		else:
 			usage("ssh")
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.sshkey_upload(key)
 	elif args[0] == 'delete':
 		if len(args) != 2:
 			usage("ssh")
-		handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+		handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 		handle.sshkey_delete(args[1])
 	else:
 		usage("ssh")
 
-def whoami(args, baseurl, user, token, verbose, folder, user_agent):
-	handle = blih(baseurl=baseurl, user=user, token=token, verbose=verbose, user_agent=user_agent)
+def whoami(args, baseurl, user, token, folder, user_agent):
+	handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 	handle.whoami()
 
 # 	  /$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$$ /$$$$$$  /$$$$$$
@@ -571,7 +595,7 @@ def whoami(args, baseurl, user, token, verbose, folder, user_agent):
 # 	|  $$$$$$/|  $$$$$$/| $$ \  $$| $$       /$$$$$$|  $$$$$$/
 # 	 \______/  \______/ |__/  \__/|__/      |______/ \______/
 
-def config(args, baseurl, user, token, verbose, folder, user_agent):
+def config(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("config")
 	if args[0] == 'crypt':
@@ -588,9 +612,16 @@ def config(args, baseurl, user, token, verbose, folder, user_agent):
 	else:
 		usage("config")
 
-#GROUP
+# 	  /$$$$$$  /$$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$
+# 	 /$$__  $$| $$__  $$ /$$__  $$| $$  | $$| $$__  $$
+# 	| $$  \__/| $$  \ $$| $$  \ $$| $$  | $$| $$  \ $$
+# 	| $$ /$$$$| $$$$$$$/| $$  | $$| $$  | $$| $$$$$$$/
+# 	| $$|_  $$| $$__  $$| $$  | $$| $$  | $$| $$____/
+# 	| $$  \ $$| $$  \ $$| $$  | $$| $$  | $$| $$
+# 	|  $$$$$$/| $$  | $$|  $$$$$$/|  $$$$$$/| $$
+# 	 \______/ |__/  |__/ \______/  \______/ |__/
 
-def group(args, baseurl, user, token, verbose, folder, user_agent):
+def group(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("group")
 	if args[0] == 'create':
@@ -811,18 +842,17 @@ if __name__ == "__main__":
 				password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
 			else:
 				password = sys.stdin.readline().rstrip()
-
 			token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 
 	if args[0] == 'repository':
-		repository(args[1:], baseurl, user, token, verbose, folder, user_agent)
+		repository(args[1:], baseurl, user, token, folder, user_agent)
 	elif args[0] == 'group':
-		group(args[1:], baseurl, user, token, verbose, folder, user_agent)
+		group(args[1:], baseurl, user, token, folder, user_agent)
 	elif args[0] == 'sshkey':
-		sshkey(args[1:], baseurl, user, token, verbose, folder, user_agent)
+		sshkey(args[1:], baseurl, user, token, folder, user_agent)
 	elif args[0] == 'whoami':
-		whoami(args[1:], baseurl, user, token, verbose, folder, user_agent)
+		whoami(args[1:], baseurl, user, token, folder, user_agent)
 	elif args[0] == 'config':
-		config(args[1:], baseurl, user, token, verbose, folder, user_agent)
+		config(args[1:], baseurl, user, token, folder, user_agent)
 	else:
 		usage()

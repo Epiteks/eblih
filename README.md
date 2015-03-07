@@ -33,4 +33,3 @@ sudo cp blihtek /usr/bin/
 ## TODO
 
 * Check if user exists into PIE when added into a group
-* Add explicit error output for subprocess.check_output ("repository clone / link")
