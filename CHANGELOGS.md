@@ -1,5 +1,10 @@
 ## Changelogs
 
+* v1.2
+    * Install mode
+        * Now you can "install" blihtek. This command will copy blihtek into your chosen location (Default : /usr/bin)
+    * BLIH Documentation available [here](https://github.com/hug33k/blihtek/blob/master/BLIH.md)
+
 * v1.1
     * Update verbose option
         * Now with "-v", you can have an explicit output when you have an error on commands who execute shell commands

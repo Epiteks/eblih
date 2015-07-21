@@ -4,7 +4,7 @@
 # All rights reserved
 #
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted providing that the following conditions 
+# modification, are permitted providing that the following conditions
 # are met:
 # 1. Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
@@ -41,7 +41,7 @@ import time
 import signal
 
 versionBLIH = 1.7
-versionBLIHTEK = 1.1
+versionBLIHTEK = 1.2
 global verbose
 
 # 	 /$$$$$$$  /$$       /$$$$$$ /$$   /$$
@@ -54,7 +54,7 @@ global verbose
 # 	|_______/ |________/|______/|__/  |__/
 
 class blih:
-	def __init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, user_agent='blih-' + str(versionBLIH) + '-linux'):
+	def	__init__(self, baseurl='https://blih.epitech.eu/', user=None, token=None, user_agent='blih-' + str(versionBLIH) + '-linux'):
 		self._baseurl = baseurl
 		if token:
 			self._token = token
@@ -80,22 +80,22 @@ class blih:
 	# 	   | $$  |  $$$$$$/| $$ \  $$| $$$$$$$$| $$ \  $$
 	# 	   |__/   \______/ |__/  \__/|________/|__/  \__/
 
-	def token_get(self):
+	def	token_get(self):
 		return self._token
 
-	def token_set(self, token):
+	def	token_set(self, token):
 		self._token = token
 
 	token = property(token_get, token_set)
 
-	def token_calc(self):
+	def	token_calc(self):
 		if sys.stdin.isatty():
 			password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
 		else:
 			password = sys.stdin.readline().rstrip()
 		self._token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 
-	def sign_data(self, data=None):
+	def	sign_data(self, data=None):
 		signature = hmac.new(self._token, msg=bytes(self._user, 'utf8'), digestmod=hashlib.sha512)
 		if data:
 			signature.update(bytes(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')), 'utf8'))
@@ -103,10 +103,9 @@ class blih:
 		signed_data = {'user' : self._user, 'signature' : signature.hexdigest()}
 		if data != None:
 			signed_data['data'] = data
-
 		return signed_data
 
-	def request(self, resource, method='GET', content_type='application/json', data=None, url=None):
+	def	request(self, resource, method='GET', content_type='application/json', data=None, url=None):
 		signed_data = self.sign_data(data)
 
 		if url:
@@ -115,7 +114,6 @@ class blih:
 			req = urllib.request.Request(url=self._baseurl + resource, method=method, data=bytes(json.dumps(signed_data), 'utf8'))
 		req.add_header('Content-Type', content_type)
 		req.add_header('User-Agent', self._useragent)
-
 		try:
 			f = urllib.request.urlopen(req)
 		except urllib.error.HTTPError as e:
@@ -144,31 +142,31 @@ class blih:
 	# 	| $$  | $$| $$$$$$$$| $$      |  $$$$$$/
 	# 	|__/  |__/|________/|__/       \______/
 
-	def repo_create(self, name, type='git', description=None):
+	def	repo_create(self, name, type='git', description=None):
 		data = {'name' : name, 'type' : type}
 		if description:
 			data['description'] = description
 		status, reason, headers, data = self.request('/repositories', method='POST', data=data)
 		print (setcolor("green") + data['message'] + setcolor())
 
-	def repo_list(self):
+	def	repo_list(self):
 		status, reason, headers, data = self.request('/repositories', method='GET')
 		return data['repositories']
 
-	def repo_delete(self, name):
+	def	repo_delete(self, name):
 		status, reason, headers, data = self.request('/repository/' + name, method='DELETE')
 		print (setcolor("green") + data['message'] + setcolor())
 
-	def repo_info(self, name):
+	def	repo_info(self, name):
 		status, reason, headers, data = self.request('/repository/' + name, method='GET')
 		print (setcolor("green") + data['message'] + setcolor())
 
-	def repo_setacl(self, name, acluser, acl):
+	def	repo_setacl(self, name, acluser, acl):
 		data = {'user' : acluser, 'acl' : acl}
 		status, reason, headers, data = self.request('/repository/' + name + '/acls', method='POST', data=data)
 		print (setcolor("green") + data['message'] + " for " + setcolor("blue") + acluser + setcolor())
 
-	def repo_getacl(self, name):
+	def	repo_getacl(self, name):
 		status, reason, headers, data = self.request('/repository/' + name + '/acls', method='GET')
 		for i in data.keys():
 			print (setcolor("green") + i + setcolor() + '\t' + setcolor("blue") + data[i] + setcolor())
@@ -182,7 +180,7 @@ class blih:
 	# 	|  $$$$$$/|  $$$$$$/| $$  | $$| $$ \  $$| $$$$$$$$    | $$
 	# 	 \______/  \______/ |__/  |__/|__/  \__/|________/    |__/
 
-	def sshkey_upload(self, keyfile):
+	def	sshkey_upload(self, keyfile):
 		try:
 			f = open(keyfile, 'r')
 		except (PermissionError, FileNotFoundError):
@@ -194,16 +192,16 @@ class blih:
 		status, reason, headers, data = self.request('/sshkeys', method='POST', data=data)
 		print (setcolor("green") + data['message'] + setcolor())
 
-	def sshkey_delete(self, sshkey):
+	def	sshkey_delete(self, sshkey):
 		status, reason, headers, data = self.request('/sshkey/' + sshkey, method='DELETE')
 		print (setcolor("green") + data['message'] + setcolor())
 
-	def sshkey_list(self):
+	def	sshkey_list(self):
 		status, reason, headers, data = self.request('/sshkeys', method='GET')
 		for i in data.keys():
 			print (setcolor("green") + i + setcolor() + '\n' + data[i] + '\n')
 
-	def whoami(self):
+	def	whoami(self):
 		status, reason, headers, data = self.request('/whoami', method='GET')
 		print (setcolor("green") + data['message'] + setcolor())
 
@@ -217,12 +215,12 @@ class blih:
 # 	|_______/ |________/|______/|__/  |__/   |__/   |________/|__/  \__/
 
 class blihtek:
-	def signal_handler(signal, frame):
+	def	signal_handler(signal, frame):
 		print(setcolor("red") + 'Quit...' + setcolor())
 		shutil.rmtree("/tmp/blihtek", ignore_errors=True)
 		sys.exit(1)
 
-	def read_config_file():
+	def	read_config_file():
 		filename = os.getenv('HOME') + "/.blihtek"
 		if os.path.isfile(filename) == False:
 			result = {}
@@ -241,7 +239,7 @@ class blihtek:
 				sys.exit(1)
 		return (result)
 
-	def write_config_file(fileData):
+	def	write_config_file(fileData):
 		filename = os.getenv('HOME') + "/.blihtek"
 		try:
 			result = json.dumps(fileData)
@@ -262,7 +260,7 @@ class blihtek:
 	# 	| $$  | $$| $$$$$$$$| $$      |  $$$$$$/
 	# 	|__/  |__/|________/|__/       \______/
 
-	def repo_list(blih):
+	def	repo_list(blih):
 		data = blih.repo_list()
 		result = [];
 		for i in data:
@@ -271,7 +269,7 @@ class blihtek:
 		for i in result:
 			print (setcolor("green") + i + setcolor())
 
-	def repo_list_match(blih, text):
+	def	repo_list_match(blih, text):
 		data = blih.repo_list()
 		regex = re.compile(str('^[\S\s]*' + text + '[\S\s]*$'))
 		result = [];
@@ -286,7 +284,7 @@ class blihtek:
 		if anyMatch:
 			print (setcolor("red") + "There is no repositories containing " + setcolor("blue") + text + setcolor())
 
-	def repo_clone(user, login, repo, folder):
+	def	repo_clone(user, login, repo, folder):
 		command = "git clone " + user + "@git.epitech.eu:/" + login + "/" + repo + " " + folder + "/" + repo
 		try:
 			res = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
@@ -297,7 +295,7 @@ class blihtek:
 			sys.exit(1)
 		print (setcolor("green") + "Repository cloned" + setcolor())
 
-	def repo_link(user, login, repo, folder):
+	def	repo_link(user, login, repo, folder):
 		if os.path.isdir(folder) == False:
 			print (setcolor("red") + "Folder does not exist" + setcolor())
 			sys.exit(1)
@@ -312,7 +310,7 @@ class blihtek:
 			sys.exit(1)
 		print (setcolor("green") + "Repository linked" + setcolor())
 
-	def repo_bkup(user, login, repo, folder):
+	def	repo_bkup(user, login, repo, folder):
 		dirBase = "/tmp/blihtek"
 		if not os.path.isdir(dirBase):
 			os.makedirs(dirBase)
@@ -338,7 +336,7 @@ class blihtek:
 		shutil.move("/tmp/backup.tgz", folder)
 		print (setcolor("green") + "Backup finished" + setcolor())
 
-	def repo_bkupall(blih, user, folder):
+	def	repo_bkupall(blih, user, folder):
 		dirBase = "/tmp/blihtek"
 		if not os.path.isdir(dirBase):
 			os.makedirs(dirBase)
@@ -383,7 +381,7 @@ class blihtek:
 	# 	|  $$$$$$/| $$  | $$|  $$$$$$/|  $$$$$$/| $$
 	# 	 \______/ |__/  |__/ \______/  \______/ |__/
 
-	def grup_create(name):
+	def	grup_create(name):
 		fileData = blihtek.read_config_file()
 		userList = []
 		if (name in fileData):
@@ -393,7 +391,7 @@ class blihtek:
 			blihtek.write_config_file(fileData)
 			print (setcolor("green") + "Group " + setcolor("blue") + name + setcolor("green") + " created" + setcolor())
 
-	def grup_add(name, user):
+	def	grup_add(name, user):
 		fileData = blihtek.read_config_file()
 		if (name in fileData):
 			if (user in fileData[name]):
@@ -405,7 +403,7 @@ class blihtek:
 		else:
 			print(setcolor("red") + "Group not found" + setcolor())
 
-	def grup_rm(name):
+	def	grup_rm(name):
 		fileData = blihtek.read_config_file()
 		if name in fileData:
 			fileData.pop(name)
@@ -414,7 +412,7 @@ class blihtek:
 		else:
 			print (setcolor("red") + "Group not found" + setcolor())
 
-	def grup_rmuser(name, user):
+	def	grup_rmuser(name, user):
 		fileData = blihtek.read_config_file()
 		if name in fileData:
 			if user in fileData[name]:
@@ -426,7 +424,7 @@ class blihtek:
 		else:
 			print (setcolor("red") + "Group not found" + setcolor())
 
-	def grup_list(name = ""):
+	def	grup_list(name = ""):
 		fileData = blihtek.read_config_file()
 		if name != "":
 			if name in fileData:
@@ -453,7 +451,7 @@ class blihtek:
 	# 	|  $$$$$$/|  $$$$$$/| $$ \  $$| $$
 	# 	 \______/  \______/ |__/  \__/|__/
 
-	def conf_crypt():
+	def	conf_crypt():
 		if sys.stdin.isatty():
 			password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
 		else:
@@ -461,24 +459,46 @@ class blihtek:
 		token = bytes(hashlib.sha512(bytes(password, 'utf8')).hexdigest(), 'utf8')
 		print(token.decode("utf-8"))
 
-	def conf_disp(variable):
+	def	conf_disp(variable):
 		if variable == "login":
-			if os.getenv("EPITECH_LOGIN") != None:
-				print (setcolor("green") + "EPITECH_LOGIN" + setcolor() + "\n" + os.getenv("EPITECH_LOGIN"))
-			else:
-				print (setcolor("red") + "EPITECH_LOGIN is not set" + setcolor())
+			variable = "EPITECH_LOGIN"
 		elif variable == "token":
-			if os.getenv("EPITECH_TOKEN") != None:
-				print (setcolor("green") + "EPITECH_TOKEN" + setcolor() + "\n" + os.getenv("EPITECH_TOKEN"))
-			else:
-				print (setcolor("red") + "EPITECH_TOKEN is not set" + setcolor())
+			variable = "EPITECH_TOKEN"
 		elif variable == "folder":
-			if os.getenv("EPITECH_FOLDER") != None:
-				print (setcolor("green") + "EPITECH_FOLDER" + setcolor() + "\n" + os.getenv("EPITECH_FOLDER"))
-			else:
-				print (setcolor("red") + "EPITECH_FOLDER is not set" + setcolor())
+			variable = "EPITECH_FOLDER"
 		else:
 			usage("config")
+		if os.getenv(variable) != None:
+			print (setcolor("green") + variable + setcolor() + "\n" + os.getenv(variable))
+		else:
+			print (setcolor("red") + variable + " is not set" + setcolor())
+
+	def	conf_setconfig():
+		print (setcolor("green") + "What is your type of shell?" + setcolor())
+		print (setcolor("green") + "\t[" + setcolor("blue") + "1" + setcolor("green") + "]" + setcolor("blue") + "bash-like" + setcolor())
+		print (setcolor("green") + "\t[" + setcolor("blue") + "2" + setcolor("green") + "]" + setcolor("blue") + "fish-like" + setcolor())
+		type_shell = input()
+		if not type_shell.isdigit() or int(type_shell) <= 0 or int(type_shell) > 2:
+			print (setcolor("red") + "Invalid selection" + setcolor())
+			return
+		print (type_shell)
+
+	def	conf_install():
+		if sys.argv[0].startswith("/usr/bin") or sys.argv[0].startswith("/bin"):
+			print (setcolor("blue") + "blihtek" + setcolor("green") + " is already installed" + setcolor())
+		else:
+			location = input(setcolor("green") + "Where do I install " + setcolor("blue") + "blihtek" + setcolor("green") + "? (Default : " + setcolor("blue") + "/usr/bin" + setcolor("green") + ") : " + setcolor())
+			if not location or not location.startswith("/"):
+				location = "/usr/bin"
+			install_cmd = "sudo cp " + sys.argv[0] + " " + location
+			try:
+				res = subprocess.check_output(install_cmd, stderr=subprocess.STDOUT, shell=True)
+			except Exception as e:
+				print (setcolor("red") + "Error with installation" + setcolor())
+				if verbose == True:
+					print(setcolor("red") + str(e) + setcolor())
+				sys.exit(1)
+			print (setcolor("green") + "Successfuly instaled in " + setcolor("blue") + location + setcolor())
 
 # 	 /$$$$$$$  /$$$$$$$$ /$$$$$$$   /$$$$$$
 # 	| $$__  $$| $$_____/| $$__  $$ /$$__  $$
@@ -489,7 +509,7 @@ class blihtek:
 # 	| $$  | $$| $$$$$$$$| $$      |  $$$$$$/
 # 	|__/  |__/|________/|__/       \______/
 
-def repository(args, baseurl, user, token, folder, user_agent):
+def	repository(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("repo")
 	if args[0] == 'new':
@@ -583,7 +603,7 @@ def repository(args, baseurl, user, token, folder, user_agent):
 # 	|  $$$$$$/|  $$$$$$/| $$  | $$| $$ \  $$| $$$$$$$$    | $$
 # 	 \______/  \______/ |__/  |__/|__/  \__/|________/    |__/
 
-def sshkey(args, baseurl, user, token, folder, user_agent):
+def	sshkey(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("ssh")
 	if args[0] == 'list':
@@ -607,7 +627,7 @@ def sshkey(args, baseurl, user, token, folder, user_agent):
 	else:
 		usage("ssh")
 
-def whoami(args, baseurl, user, token, folder, user_agent):
+def	whoami(args, baseurl, user, token, folder, user_agent):
 	handle = blih(baseurl=baseurl, user=user, token=token, user_agent=user_agent)
 	handle.whoami()
 
@@ -620,10 +640,13 @@ def whoami(args, baseurl, user, token, folder, user_agent):
 # 	|  $$$$$$/|  $$$$$$/| $$ \  $$| $$       /$$$$$$|  $$$$$$/
 # 	 \______/  \______/ |__/  \__/|__/      |______/ \______/
 
-def config(args, baseurl, user, token, folder, user_agent):
+def	config(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("config")
-	if args[0] == 'crypt':
+	if args[0] == 'install':
+		blihtek.conf_install()
+		blihtek.conf_setconfig()
+	elif args[0] == 'crypt':
 		blihtek.conf_crypt()
 	elif args[0] == 'disp':
 		if len(args) == 1:
@@ -646,7 +669,7 @@ def config(args, baseurl, user, token, folder, user_agent):
 # 	|  $$$$$$/| $$  | $$|  $$$$$$/|  $$$$$$/| $$
 # 	 \______/ |__/  |__/ \______/  \______/ |__/
 
-def group(args, baseurl, user, token, folder, user_agent):
+def	group(args, baseurl, user, token, folder, user_agent):
 	if len(args) == 0:
 		usage("group")
 	if args[0] == 'create':
@@ -687,7 +710,7 @@ def group(args, baseurl, user, token, folder, user_agent):
 	else:
 		usage("group")
 
-def version():
+def	version():
 	lastVersion = urllib.request.urlopen('https://raw.githubusercontent.com/hug33k/blihtek/master/.version').read().decode('utf-8').replace('\n', '')
 	if lastVersion <= str(versionBLIHTEK):
 		isUpdate = False
@@ -702,7 +725,7 @@ def version():
 		print (setcolor("red") + 'An update is available ' + setcolor("green") + '(' + lastVersion + ')' + setcolor())
 	sys.exit(1)
 
-def setcolor(color = ""):
+def	setcolor(color = ""):
 	if colors == True:
 		if color == "red":
 			return '\033[1;31m'
@@ -724,7 +747,7 @@ def setcolor(color = ""):
 # 	|  $$$$$$/|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$$
 # 	 \______/  \______/ |__/  |__/ \______/ |________/
 
-def usage(mode = ""):
+def	usage(mode = ""):
 	name = ntpath.basename(sys.argv[0])
 	if mode == "repo":
 		print (setcolor("red") + 'Usage: ' + name + ' [options] repository command ...')
@@ -756,6 +779,7 @@ def usage(mode = ""):
 	elif mode == "config":
 		print (setcolor("red") + 'Usage: ' + name + ' [options] config command ...')
 		print (setcolor() + '\nCommands :')
+		print ('\tinstall ' + '\t\t\t-- ' + setcolor("green") + 'Install ' + setcolor("blue") + 'blihtek' + setcolor())
 		print ('\tcrypt ' + '\t\t\t\t-- ' + setcolor("green") + 'Crypt your password in SHA512 for ' + setcolor("blue") + 'EPITECH_TOKEN' + setcolor())
 		print ('\tdisp ' + '\t\t\t\t-- ' + setcolor("green") + 'Display all the values of blihtek variables' + setcolor())
 		print ('\tdisp ' + setcolor("blue") + 'variable' + setcolor() + '\t\t\t-- ' + setcolor("green") + 'Display the value of blihtek ' + setcolor("blue") + 'variable' + setcolor())
