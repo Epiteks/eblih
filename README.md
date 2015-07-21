@@ -1,4 +1,4 @@
-# blihtek v1.0
+# blihtek v1.1
 BLIH simplified for Epitech
 
 ## Thanks
