@@ -7,7 +7,8 @@ import shutil
 import signal
 import getpass
 import hashlib
-import BLIH
+import json
+from srcs import BLIH
 
 def	setcolor(color = "", colors=True):
 	if colors == True:
@@ -24,7 +25,7 @@ def	setcolor(color = "", colors=True):
 
 class	Eblih(object):
 
-	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, graphicMode=False):
+	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, groups="./groups.json", graphicMode=False):
 		super(Eblih, self).__init__()
 		self._user = user
 		self._token = token
@@ -33,6 +34,7 @@ class	Eblih(object):
 		self._tmp = tmp
 		self._baseurl = baseurl
 		self._verbose = verbose
+		self._groups = groups
 		self._graphicMode = graphicMode
 		signal.signal(signal.SIGINT, self.signal_handler)
 
@@ -51,7 +53,8 @@ Global Options :
 	-c | --nocolor			-- Remove the colors
 	-b url | --baseurl=url		-- Base URL for BLIH
 	-t token | --token token	-- Specify token in the cmdline
-	-T | --tmp			-- Location of folder used as tmp
+	-T folder | --tmp folder	-- Set folder as tmp
+	-g file | --groups file		-- File for groups informations
 	-V | --version			-- Version
 
 Commands :
@@ -118,7 +121,86 @@ Environment variables :
 			display[args[0]](result)
 
 		def	group(args):
-			print("group action")
+
+			def	save(data):
+				with open(self._groups, "w") as dataFile:
+					dataFile.write(json.dumps(data))
+
+			def	create(args):
+				for group in config["groups"]:
+					if group["name"] == args[0]:
+						raise Exception("Group already exist")
+				config["groups"].append({"name": args[0], "users": []})
+				save(config)
+
+			def	add(args):
+				for group in config["groups"]:
+					if group["name"] != args[0]:
+						continue
+					for user in group["users"]:
+						if user["name"] == args[1]:
+							user["acls"] = args[2]
+							save(config)
+							return
+					group["users"].append({"name": args[1], "acls": args[2]})
+					save(config)
+					return
+				raise Exception("Group not found")
+
+			def	delete(args):
+				for group in config["groups"]:
+					if group["name"] != args[0]:
+						continue
+					if len(args) == 1:
+						config["groups"].remove(group)
+						save(config)
+						return
+					else:
+						toRemove = []
+						users = args[1:]
+						for user in group["users"]:
+							if user["name"] in users:
+								toRemove.append(user)
+								users.remove(user["name"])
+						for user in users:
+							print(user + " not found in group")
+						for user in toRemove:
+							group["users"].remove(user)
+					save(config)
+					return
+				raise Exception("Group not found")
+
+			def	show(args=None):
+				for group in config["groups"]:
+					if len(args) and group["name"] != args[0]:
+						continue
+					print(group["name"])
+					for user in group["users"]:
+						print("\t{0}: {1}".format(user["name"], user["acls"]))
+					if len(args) and group["name"] == args[0]:
+						return
+				if len(args):
+					raise Exception("Group not found")
+
+			def	rename(args):
+				for group in config["groups"]:
+					if group["name"] != args[0]:
+						continue
+					group["name"] = args[1]
+					save(config)
+					return
+				raise Exception("Group not found")
+
+			if not os.path.exists(self._groups):
+				save({"groups":[]})
+			with open(self._groups) as data:
+				config = json.load(data)
+			actions = {"create": create,
+						"add": add,
+						"delete": delete,
+						"rename": rename,
+						"list": show}
+			actions[args[0]](args[1:])
 
 		def	sshkey(args):
 
@@ -191,7 +273,7 @@ if __name__ == '__main__':
 	def	getEblih(args=None):
 		folder = os.getenv('EPITECH_FOLDER') if (os.getenv('EPITECH_FOLDER') != None and os.getenv('EPITECH_FOLDER') != "") else os.getenv('PWD')
 		try:
-			opts, args = getopt.getopt(args, 'hf:cvu:b:t:V:T:', ['help', 'folder=', 'nocolor', 'verbose', 'user=', 'baseurl=', 'token=', 'version', "tmp="])
+			opts, args = getopt.getopt(args, 'hf:cvu:b:t:V:T:g:', ['help', 'folder=', 'nocolor', 'verbose', 'user=', 'baseurl=', 'token=', 'version', "tmp=", "groups="])
 		except getopt.GetoptError as e:
 			print (e)
 			Eblih.usage()
@@ -201,6 +283,7 @@ if __name__ == '__main__':
 		colors = True
 		tmp = "/tmp/eblih"
 		baseurl = "https://blih.epitech.eu"
+		groups = "srcs/groups.json"
 		verbose = False
 		graphicMode = False
 		for flag, value in opts:
@@ -223,6 +306,8 @@ if __name__ == '__main__':
 				Eblih.version()
 			elif flag in ('-T', '--tmp'):
 				tmp = value
+			elif flag in ('-g', '--groups'):
+				groups = value
 			else:
 				Eblih.usage()
 		graphicMode = True if len(args) == 0 else False
@@ -240,7 +325,7 @@ if __name__ == '__main__':
 				else:
 					password = sys.stdin.readline().rstrip()
 				token = bytearray(hashlib.sha512(bytearray(password, 'utf8')).hexdigest(), 'utf8')
-		return Eblih(user, token, colors, folder, tmp, baseurl, verbose, graphicMode), args
+		return Eblih(user, token, colors, folder, tmp, baseurl, verbose, groups, graphicMode), args
 
 	eblih, args = getEblih(sys.argv[1:])
 	eblih.execute(args)

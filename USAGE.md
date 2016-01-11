@@ -11,6 +11,8 @@ Global Options :
     -c | --nocolor              -- Remove the colors
     -b url | --baseurl=url      -- Base URL for BLIH
     -t token | --token token    -- Specify token in the cmdline
+    -T folder | --tmp folder    -- Set folder as tmp
+    -g file | --groups file     -- File for groups informations
     -V | --version              -- Version
 
 Commands :
@@ -44,22 +46,27 @@ Commands :
     getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for user on repo
 [TODO]setgacl repo group acl        -- Set (or remove) an acl for users in group on repo
+    delete repo                 -- Delete the repository repo
                                 ACL format:
                                 r for read
                                 w for write
                                 a for admin
 ````
 
-* [TODO]Group mode
+* Group mode
 ````
 Commands :
-[TODO]create name                 -- Create the group name
-[TODO]create name users           -- Create the group name with users (one or more)
-[TODO]add name users              -- Add users (one or more) to the group name
-[TODO]remove name                 -- Remove the group name
-[TODO]remove name users           -- Remove users (one or more) from the group name
-[TODO]list                        -- List the groups
-[TODO]list name                   -- List the users in the group name
+    create name                 -- Create the group name
+    add name user acl           -- Add user to the group name with acl (Update user if already in group)
+    delete name                 -- Remove the group name
+    delete name users           -- Remove users (one or more) from the group name
+    list                        -- List the groups
+    list name                   -- List the users in the group name
+    rename name newname         -- Change group name into new group name
+                                ACL format:
+                                r for read
+                                w for write
+                                a for admin
 ````
 
 * SSHKey mode

@@ -5,7 +5,7 @@ import request
 
 class	API(object):
 
-	def	__init__(self, login, token, baseURL="https://blih.epitech.eu", routes="./BLIHAPI.json"):
+	def	__init__(self, login, token, baseURL="https://blih.epitech.eu", routes="srcs/BLIHAPI.json"):
 		super(API, self).__init__()
 		self._base = baseURL
 		self._login = login
