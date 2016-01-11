@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # EBLIH
 Enhanced-BLIH for Epitech (Formerly known as blihtek)
 
