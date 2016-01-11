@@ -26,4 +26,4 @@ set -U EPITECH_FOLDER "/your/work/folder"
 [Available here](https://github.com/hug33k/eblih/blob/master/CHANGELOGS.md)
 
 ## Thanks
-Thanks to "IONIS Bocal", korovi_o, [Rhatchet](https://github.com/Rhatchet) and [pouleta](https://github.com/pouleta)
+Thanks to korovi_o, [Rhatchet](https://github.com/Rhatchet) and [pouleta](https://github.com/pouleta)

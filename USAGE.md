@@ -37,13 +37,13 @@ Commands :
 [TODO]link user repo              -- Link the current directory with repo
     info repo                   -- Get the repository metadata
     list                        -- List the repositories created
-[TODO]list text                   -- List the repositories created containing text
+    list text                   -- List the repositories created containing text
 [TODO]backup repo                 -- Backup the repository repo
 [TODO]backup user repo            -- Backup the repository repo of user
 [TODO]backupall                   -- Backup all your repositories
     getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for user on repo
-[TODO]setacl repo group acl        -- Set (or remove) an acl for users in group on repo
+[TODO]setgacl repo group acl        -- Set (or remove) an acl for users in group on repo
                                 ACL format:
                                 r for read
                                 w for write

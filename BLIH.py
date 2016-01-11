@@ -82,8 +82,6 @@ class	API(object):
 
 		def	execReq(req):
 			status = req.execute()
-			print(status)
-			print(req)
 			return req.parse() if status else req.getError()
 
 		if not req:

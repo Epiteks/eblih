@@ -77,7 +77,30 @@ Environment variables :
 
 	def	execute(self, args):
 
-		def	repository(self, args):
+		def	printMessage(message):
+			print(message["data"]["message"])
+
+		def	repository(args):
+
+			def	printList(data):
+				repositories = []
+				for name in data["data"]["repositories"]:
+					if len(name):
+						repositories.append(name)
+				repositories.sort(key=lambda x:x.lower())
+				for name in repositories:
+					if len(args) == 2 and args[1] not in name:
+						continue
+					print(name)
+
+			def	printACL(data):
+				users = []
+				for name in data["data"]:
+					users.append(name)
+				users.sort(key=lambda x:x.lower())
+				for name in users:
+					print("{0}:\t{1}".format(name, data["data"][name]))
+
 			api = BLIH.Repository(self._user, self._token)
 			actions = {"create": api.create,
 						"list": api.list,
@@ -86,12 +109,18 @@ Environment variables :
 						"setacl": api.setACL,
 						"delete": api.delete}
 			result = actions[args[0]](args[1:])
-			print(result)
+			display = {"create": printMessage,
+						"list": printList,
+						"info": printMessage,
+						"getacl": printACL,
+						"setacl": printMessage,
+						"delete": printMessage}
+			display[args[0]](result)
 
-		def	group(self, args):
+		def	group(args):
 			print("group action")
 
-		def	sshkey(self, args):
+		def	sshkey(args):
 			api = BLIH.SSHKey(self._user, self._token)
 			actions = {"upload": api.upload,
 						"list": api.list,
@@ -99,10 +128,10 @@ Environment variables :
 			result = actions[args[0]](args[1:])
 			print(result)
 
-		def	config(self, args):
+		def	config(args):
 			print("config action")
 
-		def	help(self, args):
+		def	help(args):
 			self.usage(exit=0)
 
 		actions = {"repository": repository,
@@ -111,7 +140,7 @@ Environment variables :
 					"config": config,
 					"help": help}
 		try:
-			actions[args[0]](self, args[1:])
+			actions[args[0]](args[1:])
 		except Exception as e:
 			print("Error with action")
 			return e
@@ -173,5 +202,4 @@ if __name__ == '__main__':
 		return Eblih(user, token, colors, folder, tmp, baseurl, verbose, graphicMode), args
 
 	eblih, args = getEblih(sys.argv[1:])
-	print(eblih.execute(args))
-
+	eblih.execute(args)

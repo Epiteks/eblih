@@ -15,8 +15,6 @@ class	Request(object):
 		self._done = True
 		if self._method == "GET":
 			self._request = requests.get(self._url, data=self._data, headers={"Content-Type": "application/json"})
-			print(self._url)
-			print(self._request.status_code)
 		elif self._method == "POST":
 			self._request = requests.post(self._url, data=self._data, headers={"Content-Type": "application/json"})
 		elif self._method == "DELETE":
