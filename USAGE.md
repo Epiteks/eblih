@@ -70,12 +70,12 @@ Commands :
     delete sshkey               -- Delete the sshkey with comment <sshkey>
 ````
 
-* [TODO]Config mode
+* Config mode
 ````
 Commands :
-[TODO]crypt                       -- Crypt your password in SHA512 for EPITECH_TOKEN
-[TODO]disp                        -- Display all the values of blihtek variables
-[TODO]disp variable               -- Display the value of blihtek variable
+    crypt                       -- Crypt your password in SHA512 for EPITECH_TOKEN
+    disp                        -- Display all the values of blihtek variables
+    disp variable               -- Display the value of blihtek variable
                                 Variables:
                                 login    for EPITECH_LOGIN
                                 token  for EPITECH_TOKEN

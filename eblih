@@ -121,19 +121,60 @@ Environment variables :
 			print("group action")
 
 		def	sshkey(args):
+
+			def	printKeys(data):
+				keys = []
+				for key in data["data"]:
+					keys.append(key)
+				keys.sort(key=lambda x:x.lower())
+				for key in keys:
+					print("{0}\n{1}\n".format(key, data["data"][key]))
+
 			api = BLIH.SSHKey(self._user, self._token)
 			actions = {"upload": api.upload,
 						"list": api.list,
 						"delete": api.delete}
 			result = actions[args[0]](args[1:])
-			print(result)
+			display = {"upload": printMessage,
+						"list": printKeys,
+						"delete": printMessage}
+			display[args[0]](result)
 
 		def	config(args):
-			print("config action")
 
-		def	help(args):
+			def	crypt(args):
+				if sys.stdin.isatty():
+					password = getpass.getpass("Your password :")
+				else:
+					password = sys.stdin.readline().rstrip()
+				token = bytearray(hashlib.sha512(bytearray(password, 'utf8')).hexdigest(), 'utf8')
+				print(token.decode("utf-8"))
+
+			def	disp(args):
+
+				def	show(var):
+					print("{0}={1}".format(var, os.getenv(var)))
+
+				var = ["EPITECH_LOGIN", "EPITECH_TOKEN", "EPITECH_FOLDER"]
+				if len(args) == 1:
+					if args[0] in var:
+						show(args[0])
+					else:
+						raise Exception("Variable not found")
+				else:
+					for item in var:
+						show(item)
+
+			actions = {"crypt": crypt,
+						"disp": disp}
+			actions[args[0]](args[1:])
+
+		def	help(args=None):
 			self.usage(exit=0)
 
+		if self._graphicMode:
+			print("GUI")
+			sys.exit(42)
 		actions = {"repository": repository,
 					"group": group,
 					"sshkey": sshkey,
@@ -147,7 +188,7 @@ Environment variables :
 
 if __name__ == '__main__':
 
-	def	getEblih(args):
+	def	getEblih(args=None):
 		folder = os.getenv('EPITECH_FOLDER') if (os.getenv('EPITECH_FOLDER') != None and os.getenv('EPITECH_FOLDER') != "") else os.getenv('PWD')
 		try:
 			opts, args = getopt.getopt(args, 'hf:cvu:b:t:V:T:', ['help', 'folder=', 'nocolor', 'verbose', 'user=', 'baseurl=', 'token=', 'version', "tmp="])
@@ -190,7 +231,7 @@ if __name__ == '__main__':
 				user = os.getenv("EPITECH_LOGIN")
 			else:
 				user = getpass.getuser()
-		if (token == None or guest) and args[0] not in ["config", "group"]:
+		if (token == None or guest) and len(args) and args[0] not in ["config", "group"]:
 			if os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "" and guest == False:
 				token = bytearray(os.getenv("EPITECH_TOKEN"), 'utf8')
 			else:
