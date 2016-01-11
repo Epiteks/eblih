@@ -1,0 +1,132 @@
+{
+	"repository":
+	[
+		{
+			"action": "create",
+			"route": "/repositories",
+			"arguments": null,
+			"method": "POST",
+			"data":
+			[
+				{
+					"name": "name",
+					"default": null,
+					"optional": false
+				},
+				{
+					"name": "type",
+					"default": "git",
+					"optional": false
+				},
+				{
+					"name": "description",
+					"default": null,
+					"optional": true
+				}
+			]
+		},
+		{
+			"action": "list",
+			"route": "/repositories",
+			"arguments": null,
+			"method": "GET",
+			"data": null
+		},
+		{
+			"action": "delete",
+			"route": "/repository/$",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "DELETE",
+			"data": null
+		},
+		{
+			"action": "info",
+			"route": "/repository/$",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "GET",
+			"data": null
+		},
+		{
+			"action": "getacl",
+			"route": "/repository/$/acls",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "GET",
+			"data": null
+		},
+		{
+			"action": "setacl",
+			"route": "/repository/$/acls",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "POST",
+			"data":
+			[
+				{
+					"name": "user",
+					"default": null,
+					"optional": false
+				},
+				{
+					"name": "acl",
+					"default": null,
+					"optional": false
+				}
+			]
+		}
+	],
+	"sshkey":
+	[
+		{
+			"action": "add",
+			"route": "/sshkeys",
+			"arguments": null,
+			"method": "POST",
+			"data":
+			[
+				{
+					"name": "sshkey",
+					"default": null,
+					"optional": false
+				}
+			]
+		},
+		{
+			"action": "delete",
+			"route": "/sshkey/$",
+			"arguments":
+			[
+				"sshkey"
+			],
+			"method": "DELETE",
+			"data": null
+		},
+		{
+			"action": "list",
+			"route": "/sshkeys",
+			"arguments": null,
+			"method": "GET",
+			"data": null
+		}
+	],
+	"whoami":
+	[
+		{
+			"action": "whoami",
+			"route": "/whoami",
+			"arguments": null,
+			"method": "GET",
+			"data": null
+		}
+	]
+}

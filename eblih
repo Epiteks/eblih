@@ -1,0 +1,177 @@
+#!/usr/bin/python2.7
+
+import os
+import sys
+import getopt
+import shutil
+import signal
+import getpass
+import hashlib
+import BLIH
+
+def	setcolor(color = "", colors=True):
+	if colors == True:
+		if color == "red":
+			return '\033[1;31m'
+		elif color == "blue":
+			return '\033[1;34m'
+		elif color == "green":
+			return '\033[1;32m'
+		else:
+			return '\033[0m'
+	else:
+		return ""
+
+class	Eblih(object):
+
+	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, graphicMode=False):
+		super(Eblih, self).__init__()
+		self._user = user
+		self._token = token
+		self._color = color
+		self._folder = folder
+		self._tmp = tmp
+		self._baseurl = baseurl
+		self._verbose = verbose
+		self._graphicMode = graphicMode
+		signal.signal(signal.SIGINT, self.signal_handler)
+
+	def	signal_handler(self, signal, frame):
+		print(setcolor("red") + 'Quit...' + setcolor())
+		shutil.rmtree(self._tmp, ignore_errors=True)
+		sys.exit(1)
+
+	def	usage(exit=1):
+		print """Usage: eblih [options] command ...
+
+Global Options :
+	-u user | --user=user		-- Run as user
+	-f folder | --folder=folder	-- Execute in specific folder
+	-v | --verbose			-- Verbose
+	-c | --nocolor			-- Remove the colors
+	-b url | --baseurl=url		-- Base URL for BLIH
+	-t token | --token token	-- Specify token in the cmdline
+	-T | --tmp			-- Location of folder used as tmp
+	-V | --version			-- Version
+
+Commands :
+	repository			-- Repository management
+	group				-- Group management
+	sshkey				-- SSH keys management
+	config				-- Modify blihtek configuration
+	NO_COMMAND			-- GUI Mode
+
+Environment variables :
+	EPITECH_LOGIN			-- Your login
+	EPITECH_TOKEN			-- Your UNIX password in SHA512
+	EPITECH_FOLDER			-- Your work folder"""
+		sys.exit(exit)
+
+	usage = staticmethod(usage)
+
+	def	version(exit=1):
+		print(setcolor("blue") + "VERSION" + setcolor())
+		sys.exit(exit)
+
+	version = staticmethod(version)
+
+	def	execute(self, args):
+
+		def	repository(self, args):
+			api = BLIH.Repository(self._user, self._token)
+			actions = {"create": api.create,
+						"list": api.list,
+						"info": api.info,
+						"getacl": api.getACL,
+						"setacl": api.setACL,
+						"delete": api.delete}
+			result = actions[args[0]](args[1:])
+			print(result)
+
+		def	group(self, args):
+			print("group action")
+
+		def	sshkey(self, args):
+			api = BLIH.SSHKey(self._user, self._token)
+			actions = {"upload": api.upload,
+						"list": api.list,
+						"delete": api.delete}
+			result = actions[args[0]](args[1:])
+			print(result)
+
+		def	config(self, args):
+			print("config action")
+
+		def	help(self, args):
+			self.usage(exit=0)
+
+		actions = {"repository": repository,
+					"group": group,
+					"sshkey": sshkey,
+					"config": config,
+					"help": help}
+		try:
+			actions[args[0]](self, args[1:])
+		except Exception as e:
+			print("Error with action")
+			return e
+
+if __name__ == '__main__':
+
+	def	getEblih(args):
+		folder = os.getenv('EPITECH_FOLDER') if (os.getenv('EPITECH_FOLDER') != None and os.getenv('EPITECH_FOLDER') != "") else os.getenv('PWD')
+		try:
+			opts, args = getopt.getopt(args, 'hf:cvu:b:t:V:T:', ['help', 'folder=', 'nocolor', 'verbose', 'user=', 'baseurl=', 'token=', 'version', "tmp="])
+		except getopt.GetoptError as e:
+			print (e)
+			Eblih.usage()
+		guest = False
+		user = None
+		token = None
+		colors = True
+		tmp = "/tmp/eblih"
+		baseurl = "https://blih.epitech.eu"
+		verbose = False
+		graphicMode = False
+		for flag, value in opts:
+			if flag in ('-h', '--help'):
+				Eblih.usage(exit=0)
+			elif flag in ('-f', '--folder'):
+				folder = value
+			elif flag in ('-v', '--verbose'):
+				verbose = True
+			elif flag in ('-c', '--nocolor'):
+				colors = False
+			elif flag in ('-u', '--user'):
+				guest = True
+				user = value
+			elif flag in ('-b', '--baseurl'):
+				baseurl = value
+			elif flag in ('-t', '--token'):
+				token = bytearray(value, 'utf8')
+			elif flag in ('-V', '--version'):
+				Eblih.version()
+			elif flag in ('-T', '--tmp'):
+				tmp = value
+			else:
+				Eblih.usage()
+		graphicMode = True if len(args) == 0 else False
+		if user == None:
+			if os.getenv("EPITECH_LOGIN") != None and len(os.getenv("EPITECH_LOGIN")):
+				user = os.getenv("EPITECH_LOGIN")
+			else:
+				user = getpass.getuser()
+		if (token == None or guest) and args[0] not in ["config", "group"]:
+			if os.getenv("EPITECH_TOKEN") != None and os.getenv("EPITECH_TOKEN") != "" and guest == False:
+				token = bytearray(os.getenv("EPITECH_TOKEN"), 'utf8')
+			else:
+				if sys.stdin.isatty():
+					password = getpass.getpass(setcolor("green") + 'Your password :' + setcolor())
+				else:
+					password = sys.stdin.readline().rstrip()
+				token = bytearray(hashlib.sha512(bytearray(password, 'utf8')).hexdigest(), 'utf8')
+		return Eblih(user, token, colors, folder, tmp, baseurl, verbose, graphicMode), args
+
+	eblih, args = getEblih(sys.argv[1:])
+	print(eblih.execute(args))
+

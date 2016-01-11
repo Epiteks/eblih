@@ -2,7 +2,7 @@
 
 * General
 ````
-Usage: ./blihtek [options] command ...
+Usage: eblih [options] command ...
 
 Global Options :
     -u user | --user=user       -- Run as user
@@ -17,8 +17,8 @@ Commands :
     repository                  -- Repository management
     group                       -- Group management
     sshkey                      -- SSH-KEYS management
-    whoami                      -- Print who you are
     config                      -- Modify blihtek configuration
+    NO_COMMAND                  -- GUI Mode
 
 Environment variables :
     EPITECH_LOGIN               -- Your login
@@ -29,37 +29,37 @@ Environment variables :
 * Repository mode
 ````
 Commands :
-    new repo                    -- Create and clone the repository repo
+[TODO]new repo                    -- Create and clone the repository repo
     create repo                 -- Create the repository repo
-    clone repo                  -- Clone the repository repo
-    clone user repo             -- Clone the repository repo of user
-    link repo                   -- Link the current directory with repo
-    link user repo              -- Link the current directory with repo
+[TODO]clone repo                  -- Clone the repository repo
+[TODO]clone user repo             -- Clone the repository repo of user
+[TODO]link repo                   -- Link the current directory with repo
+[TODO]link user repo              -- Link the current directory with repo
     info repo                   -- Get the repository metadata
     list                        -- List the repositories created
-    list text                   -- List the repositories created containing text
-    backup repo                 -- Backup the repository repo
-    backup user repo            -- Backup the repository repo of user
-    backupall                   -- Backup all your repositories
+[TODO]list text                   -- List the repositories created containing text
+[TODO]backup repo                 -- Backup the repository repo
+[TODO]backup user repo            -- Backup the repository repo of user
+[TODO]backupall                   -- Backup all your repositories
     getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for user on repo
-    setacl repo group acl        -- Set (or remove) an acl for users in group on repo
+[TODO]setacl repo group acl        -- Set (or remove) an acl for users in group on repo
                                 ACL format:
                                 r for read
                                 w for write
                                 a for admin
 ````
 
-* Group mode
+* [TODO]Group mode
 ````
 Commands :
-    create name                 -- Create the group name
-    create name users           -- Create the group name with users (one or more)
-    add name users              -- Add users (one or more) to the group name
-    remove name                 -- Remove the group name
-    remove name users           -- Remove users (one or more) from the group name
-    list                        -- List the groups
-    list name                   -- List the users in the group name
+[TODO]create name                 -- Create the group name
+[TODO]create name users           -- Create the group name with users (one or more)
+[TODO]add name users              -- Add users (one or more) to the group name
+[TODO]remove name                 -- Remove the group name
+[TODO]remove name users           -- Remove users (one or more) from the group name
+[TODO]list                        -- List the groups
+[TODO]list name                   -- List the users in the group name
 ````
 
 * SSHKey mode
@@ -70,12 +70,12 @@ Commands :
     delete sshkey               -- Delete the sshkey with comment <sshkey>
 ````
 
-* Config mode
+* [TODO]Config mode
 ````
 Commands :
-    crypt                       -- Crypt your password in SHA512 for EPITECH_TOKEN
-    disp                        -- Display all the values of blihtek variables
-    disp variable               -- Display the value of blihtek variable
+[TODO]crypt                       -- Crypt your password in SHA512 for EPITECH_TOKEN
+[TODO]disp                        -- Display all the values of blihtek variables
+[TODO]disp variable               -- Display the value of blihtek variable
                                 Variables:
                                 login    for EPITECH_LOGIN
                                 token  for EPITECH_TOKEN
