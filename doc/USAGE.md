@@ -45,7 +45,7 @@ Commands :
 [TODO]backupall                   -- Backup all your repositories
     getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for user on repo
-    setgacl repo group acl      -- Set (or remove) an acl for users in group on repo
+[TODO]setgacl repo group acl        -- Set (or remove) an acl for users in group on repo
     delete repo                 -- Delete the repository repo
                                 ACL format:
                                 r for read

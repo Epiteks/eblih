@@ -18,11 +18,11 @@ set -U EPITECH_FOLDER "/your/work/folder"
 
 ## Usage
 
-[Available here](https://github.com/hug33k/eblih/blob/master/USAGE.md)
+[Available here](https://github.com/hug33k/eblih/blob/master/doc/USAGE.md)
 
 ## Changelogs
 
-[Available here](https://github.com/hug33k/eblih/blob/master/CHANGELOGS.md)
+[Available here](https://github.com/hug33k/eblih/blob/master/doc/CHANGELOGS.md)
 
 ## Thanks
 Thanks to korovi_o, [Rhatchet](https://github.com/Rhatchet) and [pouleta](https://github.com/pouleta)

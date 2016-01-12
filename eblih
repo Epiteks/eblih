@@ -78,6 +78,17 @@ Environment variables :
 
 	version = staticmethod(version)
 
+	def	getGroupsConfig(self):
+		if not os.path.exists(self._groups):
+			self.saveGroupsConfig({"groups":[]})
+		with open(self._groups) as data:
+			config = json.load(data)
+		return config
+
+	def	saveGroupsConfig(self, data):
+		with open(self._groups, "w") as dataFile:
+			dataFile.write(json.dumps(data))
+
 	def	execute(self, args):
 
 		def	printMessage(message):
@@ -104,12 +115,25 @@ Environment variables :
 				for name in users:
 					print("{0}:\t{1}".format(name, data["data"][name]))
 
+			def	setGroupACL(args):
+				config = self.getGroupsConfig()
+				for group in config["groups"]:
+					if group["name"] != args[1]:
+						continue
+					for user in group["users"]:
+						result = api.setACL([args[0], user["name"], args[2] if len(args) == 3 else ""])
+						result["data"]["message"] += " for {0}".format(user["name"])
+						printMessage(result)
+					return
+				raise Exception("Group not found")
+
 			api = BLIH.Repository(self._user, self._token)
 			actions = {"create": api.create,
 						"list": api.list,
 						"info": api.info,
 						"getacl": api.getACL,
 						"setacl": api.setACL,
+						"setgacl": setGroupACL,
 						"delete": api.delete}
 			result = actions[args[0]](args[1:])
 			display = {"create": printMessage,
@@ -117,21 +141,18 @@ Environment variables :
 						"info": printMessage,
 						"getacl": printACL,
 						"setacl": printMessage,
+						"setgacl": sys.exit,
 						"delete": printMessage}
 			display[args[0]](result)
 
 		def	group(args):
-
-			def	save(data):
-				with open(self._groups, "w") as dataFile:
-					dataFile.write(json.dumps(data))
 
 			def	create(args):
 				for group in config["groups"]:
 					if group["name"] == args[0]:
 						raise Exception("Group already exist")
 				config["groups"].append({"name": args[0], "users": []})
-				save(config)
+				self.saveGroupsConfig(config)
 
 			def	add(args):
 				for group in config["groups"]:
@@ -140,10 +161,10 @@ Environment variables :
 					for user in group["users"]:
 						if user["name"] == args[1]:
 							user["acls"] = args[2]
-							save(config)
+							self.saveGroupsConfig(config)
 							return
 					group["users"].append({"name": args[1], "acls": args[2]})
-					save(config)
+					self.saveGroupsConfig(config)
 					return
 				raise Exception("Group not found")
 
@@ -153,7 +174,7 @@ Environment variables :
 						continue
 					if len(args) == 1:
 						config["groups"].remove(group)
-						save(config)
+						self.saveGroupsConfig(config)
 						return
 					else:
 						toRemove = []
@@ -166,7 +187,7 @@ Environment variables :
 							print(user + " not found in group")
 						for user in toRemove:
 							group["users"].remove(user)
-					save(config)
+					self.saveGroupsConfig(config)
 					return
 				raise Exception("Group not found")
 
@@ -187,14 +208,11 @@ Environment variables :
 					if group["name"] != args[0]:
 						continue
 					group["name"] = args[1]
-					save(config)
+					self.saveGroupsConfig(config)
 					return
 				raise Exception("Group not found")
 
-			if not os.path.exists(self._groups):
-				save({"groups":[]})
-			with open(self._groups) as data:
-				config = json.load(data)
+			config = self.getGroupsConfig()
 			actions = {"create": create,
 						"add": add,
 						"delete": delete,
@@ -266,6 +284,7 @@ Environment variables :
 			actions[args[0]](args[1:])
 		except Exception as e:
 			print("Error with action")
+			print(e)
 			return e
 
 if __name__ == '__main__':

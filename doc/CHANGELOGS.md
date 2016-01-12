@@ -9,7 +9,6 @@
 * v1.2.0
     * Install mode
         * Now you can "install" blihtek. This command will copy blihtek into your chosen location (Default : /usr/bin)
-    * BLIH Documentation available [here](https://github.com/hug33k/blihtek/blob/master/BLIH.md)
 
 * v1.1.0
     * Update verbose option
@@ -19,7 +18,7 @@
     * Add "group" mode
         * You can now use groups to set easily ACLs for your repositories
         * Availables actions are "create / add / remove / list"
-        * You can check [here](https://github.com/hug33k/blihtek/blob/master/USAGE.md) to see all the commands
+        * You can check [here](https://github.com/hug33k/eblih/blob/master/doc/USAGE.md) to see all the commands
     * Add redirection modes for password (By [pouleta](https://github.com/pouleta))
         * You can now send your password to blihtek with two other methods
 
