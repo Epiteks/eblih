@@ -20,7 +20,7 @@ Commands :
     group                       -- Group management
     sshkey                      -- SSH-KEYS management
     config                      -- Modify blihtek configuration
-    NO_COMMAND                  -- GUI Mode
+[TODO]NO_COMMAND                  -- GUI Mode
 
 Environment variables :
     EPITECH_LOGIN               -- Your login

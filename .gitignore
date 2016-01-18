@@ -58,3 +58,6 @@ test*
 tmp*
 OLD*
 *.pyc
+
+# Test files
+srcs/groups.json
