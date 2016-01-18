@@ -8,7 +8,7 @@ import signal
 import getpass
 import hashlib
 import json
-from srcs import BLIH
+from srcs import mode
 
 def	setcolor(color = "", colors=True):
 	if colors == True:
@@ -91,201 +91,22 @@ Environment variables :
 
 	def	execute(self, args):
 
-		def	printMessage(message):
-			print(message["data"]["message"])
-
-		def	repository(args):
-
-			def	printList(data):
-				repositories = []
-				for name in data["data"]["repositories"]:
-					if len(name):
-						repositories.append(name)
-				repositories.sort(key=lambda x:x.lower())
-				for name in repositories:
-					if len(args) == 2 and args[1] not in name:
-						continue
-					print(name)
-
-			def	printACL(data):
-				users = []
-				for name in data["data"]:
-					users.append(name)
-				users.sort(key=lambda x:x.lower())
-				for name in users:
-					print("{0}:\t{1}".format(name, data["data"][name]))
-
-			def	setGroupACL(args):
-				config = self.getGroupsConfig()
-				for group in config["groups"]:
-					if group["name"] != args[1]:
-						continue
-					for user in group["users"]:
-						result = api.setACL([args[0], user["name"], args[2] if len(args) == 3 else ""])
-						result["data"]["message"] += " for {0}".format(user["name"])
-						printMessage(result)
-					return
-				raise Exception("Group not found")
-
-			api = BLIH.Repository(self._user, self._token)
-			actions = {"create": api.create,
-						"list": api.list,
-						"info": api.info,
-						"getacl": api.getACL,
-						"setacl": api.setACL,
-						"setgacl": setGroupACL,
-						"delete": api.delete}
-			result = actions[args[0]](args[1:])
-			display = {"create": printMessage,
-						"list": printList,
-						"info": printMessage,
-						"getacl": printACL,
-						"setacl": printMessage,
-						"setgacl": sys.exit,
-						"delete": printMessage}
-			display[args[0]](result)
-
-		def	group(args):
-
-			def	create(args):
-				for group in config["groups"]:
-					if group["name"] == args[0]:
-						raise Exception("Group already exist")
-				config["groups"].append({"name": args[0], "users": []})
-				self.saveGroupsConfig(config)
-
-			def	add(args):
-				for group in config["groups"]:
-					if group["name"] != args[0]:
-						continue
-					for user in group["users"]:
-						if user["name"] == args[1]:
-							user["acls"] = args[2]
-							self.saveGroupsConfig(config)
-							return
-					group["users"].append({"name": args[1], "acls": args[2]})
-					self.saveGroupsConfig(config)
-					return
-				raise Exception("Group not found")
-
-			def	delete(args):
-				for group in config["groups"]:
-					if group["name"] != args[0]:
-						continue
-					if len(args) == 1:
-						config["groups"].remove(group)
-						self.saveGroupsConfig(config)
-						return
-					else:
-						toRemove = []
-						users = args[1:]
-						for user in group["users"]:
-							if user["name"] in users:
-								toRemove.append(user)
-								users.remove(user["name"])
-						for user in users:
-							print(user + " not found in group")
-						for user in toRemove:
-							group["users"].remove(user)
-					self.saveGroupsConfig(config)
-					return
-				raise Exception("Group not found")
-
-			def	show(args=None):
-				for group in config["groups"]:
-					if len(args) and group["name"] != args[0]:
-						continue
-					print(group["name"])
-					for user in group["users"]:
-						print("\t{0}: {1}".format(user["name"], user["acls"]))
-					if len(args) and group["name"] == args[0]:
-						return
-				if len(args):
-					raise Exception("Group not found")
-
-			def	rename(args):
-				for group in config["groups"]:
-					if group["name"] != args[0]:
-						continue
-					group["name"] = args[1]
-					self.saveGroupsConfig(config)
-					return
-				raise Exception("Group not found")
-
-			config = self.getGroupsConfig()
-			actions = {"create": create,
-						"add": add,
-						"delete": delete,
-						"rename": rename,
-						"list": show}
-			actions[args[0]](args[1:])
-
-		def	sshkey(args):
-
-			def	printKeys(data):
-				keys = []
-				for key in data["data"]:
-					keys.append(key)
-				keys.sort(key=lambda x:x.lower())
-				for key in keys:
-					print("{0}\n{1}\n".format(key, data["data"][key]))
-
-			api = BLIH.SSHKey(self._user, self._token)
-			actions = {"upload": api.upload,
-						"list": api.list,
-						"delete": api.delete}
-			result = actions[args[0]](args[1:])
-			display = {"upload": printMessage,
-						"list": printKeys,
-						"delete": printMessage}
-			display[args[0]](result)
-
-		def	config(args):
-
-			def	crypt(args):
-				if sys.stdin.isatty():
-					password = getpass.getpass("Your password :")
-				else:
-					password = sys.stdin.readline().rstrip()
-				token = bytearray(hashlib.sha512(bytearray(password, 'utf8')).hexdigest(), 'utf8')
-				print(token.decode("utf-8"))
-
-			def	disp(args):
-
-				def	show(var):
-					print("{0}={1}".format(var, os.getenv(var)))
-
-				var = ["EPITECH_LOGIN", "EPITECH_TOKEN", "EPITECH_FOLDER"]
-				if len(args) == 1:
-					if args[0] in var:
-						show(args[0])
-					else:
-						raise Exception("Variable not found")
-				else:
-					for item in var:
-						show(item)
-
-			actions = {"crypt": crypt,
-						"disp": disp}
-			actions[args[0]](args[1:])
-
-		def	help(args=None):
-			self.usage(exit=0)
-
 		if self._graphicMode:
 			print("GUI")
 			sys.exit(42)
-		actions = {"repository": repository,
-					"group": group,
-					"sshkey": sshkey,
-					"config": config,
-					"help": help}
+		elif args[0] == "help":
+			self.usage(exit=0)
+		modes = {"repository": mode.Repository,
+					"group": mode.Group,
+					"sshkey": mode.SSHKey,
+					"config": mode.Config}
 		try:
-			actions[args[0]](args[1:])
-		except Exception as e:
-			print("Error with action")
+			if args[0] not in modes:
+				raise mode.ModeError("Mode {0} not found".format(args[0]))
+			selectedMode = modes[args[0]](self._user, self._token, self._groups)
+			selectedMode.execute(args[1:])
+		except mode.ModeError as e:
 			print(e)
-			return e
 
 if __name__ == '__main__':
 
