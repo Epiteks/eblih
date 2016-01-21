@@ -7,11 +7,12 @@ import shutil
 import signal
 import getpass
 import hashlib
-import json
 from srcs import mode
 
+gColors = True
+
 def	setcolor(color = "", colors=True):
-	if colors == True:
+	if colors == True and gColors == True:
 		if color == "red":
 			return '\033[1;31m'
 		elif color == "blue":
@@ -23,6 +24,9 @@ def	setcolor(color = "", colors=True):
 	else:
 		return ""
 
+def	show(message, color):
+	print(setcolor(color) + message + setcolor())
+
 class	Eblih(object):
 
 	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, groups="./groups.json", graphicMode=False):
@@ -30,6 +34,8 @@ class	Eblih(object):
 		self._user = user
 		self._token = token
 		self._color = color
+		global gColors
+		gColors = self._color
 		self._folder = folder
 		self._tmp = tmp
 		self._baseurl = baseurl
@@ -78,17 +84,6 @@ Environment variables :
 
 	version = staticmethod(version)
 
-	def	getGroupsConfig(self):
-		if not os.path.exists(self._groups):
-			self.saveGroupsConfig({"groups":[]})
-		with open(self._groups) as data:
-			config = json.load(data)
-		return config
-
-	def	saveGroupsConfig(self, data):
-		with open(self._groups, "w") as dataFile:
-			dataFile.write(json.dumps(data))
-
 	def	execute(self, args):
 
 		if self._graphicMode:
@@ -106,7 +101,7 @@ Environment variables :
 			selectedMode = modes[args[0]](self._user, self._token, self._groups)
 			selectedMode.execute(args[1:])
 		except mode.ModeError as e:
-			print(e)
+			show(str(e), "red")
 
 if __name__ == '__main__':
 
