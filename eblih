@@ -1,31 +1,34 @@
 #!/usr/bin/python2.7
 
-import os
-import sys
-import getopt
-import shutil
-import signal
-import getpass
-import hashlib
-from srcs import mode
+try:
+	import os
+	import sys
+	import getopt
+	import shutil
+	import signal
+	import getpass
+	import hashlib
+	from srcs import mode
+except Exception as e:
+	print("Missing module " + str(e).split(" ")[-1] + "\nPlease install it with pip")
 
 gColors = True
 
-def	setcolor(color = "", colors=True):
+def	setcolor(color="", colors=True):
+	res = {"red": '\033[1;31m',
+				"blue": '\033[1;34m',
+				"green": '\033[1;32m',
+				"NONE": '\033[0m'}
 	if colors == True and gColors == True:
-		if color == "red":
-			return '\033[1;31m'
-		elif color == "blue":
-			return '\033[1;34m'
-		elif color == "green":
-			return '\033[1;32m'
-		else:
-			return '\033[0m'
+		return color[res] if color in res else color["NONE"]
 	else:
 		return ""
 
-def	show(message, color):
-	print(setcolor(color) + message + setcolor())
+def	show(message, color, direct=True):
+	out = setcolor(color) + message + setcolor()
+	if direct:
+		print(out)
+	return out
 
 class	Eblih(object):
 
@@ -34,8 +37,6 @@ class	Eblih(object):
 		self._user = user
 		self._token = token
 		self._color = color
-		global gColors
-		gColors = self._color
 		self._folder = folder
 		self._tmp = tmp
 		self._baseurl = baseurl
@@ -45,7 +46,7 @@ class	Eblih(object):
 		signal.signal(signal.SIGINT, self.signal_handler)
 
 	def	signal_handler(self, signal, frame):
-		print(setcolor("red") + 'Quit...' + setcolor())
+		show('Quit...', "red")
 		shutil.rmtree(self._tmp, ignore_errors=True)
 		sys.exit(1)
 
@@ -79,7 +80,9 @@ Environment variables :
 	usage = staticmethod(usage)
 
 	def	version(exit=1):
-		print(setcolor("blue") + "VERSION" + setcolor())
+		with open(".version", "r") as vFile:
+			nb = vFile.read()
+		print("Version " + show(nb, "green", direct=False))
 		sys.exit(exit)
 
 	version = staticmethod(version)
@@ -108,27 +111,26 @@ if __name__ == '__main__':
 	def	getEblih(args=None):
 		folder = os.getenv('EPITECH_FOLDER') if (os.getenv('EPITECH_FOLDER') != None and os.getenv('EPITECH_FOLDER') != "") else os.getenv('PWD')
 		try:
-			opts, args = getopt.getopt(args, 'hf:cvu:b:t:V:T:g:', ['help', 'folder=', 'nocolor', 'verbose', 'user=', 'baseurl=', 'token=', 'version', "tmp=", "groups="])
+			opts, args = getopt.getopt(args, 'hf:cvu:b:t:VT:g:', ['help', 'folder=', 'nocolor', 'verbose', 'user=', 'baseurl=', 'token=', 'version', "tmp=", "groups="])
 		except getopt.GetoptError as e:
-			print (e)
+			print(e)
 			Eblih.usage()
-		guest = False
-		user = None
-		token = None
+		guest = verbose = graphicMode = version = showHelp = usage = False
+		user = token = None
 		colors = True
 		tmp = "/tmp/eblih"
 		baseurl = "https://blih.epitech.eu"
 		groups = "srcs/groups.json"
-		verbose = False
-		graphicMode = False
 		for flag, value in opts:
 			if flag in ('-h', '--help'):
-				Eblih.usage(exit=0)
+				showHelp = True
 			elif flag in ('-f', '--folder'):
 				folder = value
 			elif flag in ('-v', '--verbose'):
 				verbose = True
 			elif flag in ('-c', '--nocolor'):
+				global gColors
+				gColors = False
 				colors = False
 			elif flag in ('-u', '--user'):
 				guest = True
@@ -138,13 +140,19 @@ if __name__ == '__main__':
 			elif flag in ('-t', '--token'):
 				token = bytearray(value, 'utf8')
 			elif flag in ('-V', '--version'):
-				Eblih.version()
+				version = True
 			elif flag in ('-T', '--tmp'):
 				tmp = value
 			elif flag in ('-g', '--groups'):
 				groups = value
 			else:
-				Eblih.usage()
+				usage = True
+		if usage:
+			Eblih.usage()
+		if showHelp:
+			Eblih.usage(exit=0)
+		if version:
+			Eblih.version()
 		graphicMode = True if len(args) == 0 else False
 		if user == None:
 			if os.getenv("EPITECH_LOGIN") != None and len(os.getenv("EPITECH_LOGIN")):

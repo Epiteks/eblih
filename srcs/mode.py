@@ -3,6 +3,7 @@ import os
 import json
 import getpass
 import hashlib
+import shell
 import BLIH
 
 class	ModeError(Exception):
@@ -40,23 +41,28 @@ class	Mode(object):
 
 class	Repository(Mode):
 
-	def	__init__(self, user, token, groups="./groups.json"):
+	def	__init__(self, user, token, groups="./groups.json", gitServer="git.epitech.eu"):
 		super(Repository, self).__init__(user, token, groups)
 		self._api = BLIH.Repository(self._user, self._token)
+		self._gitServer = gitServer
 		self._actions = {"create": self._api.create,
 					"list": self._api.list,
 					"info": self._api.info,
 					"getacl": self._api.getACL,
 					"setacl": self._api.setACL,
 					"setgacl": self.setGroupACL,
-					"delete": self._api.delete}
+					"delete": self._api.delete,
+					"clone": self.cloneRepo,
+					"link": self.linkRepo}
 		self._callback = {"create": self.printMessage,
 					"list": self.printList,
 					"info": self.printMessage,
 					"getacl": self.printACL,
 					"setacl": self.printMessage,
 					"setgacl": sys.exit,
-					"delete": self.printMessage}
+					"delete": self.printMessage,
+					"clone": sys.exit,
+					"link": sys.exit}
 
 	def	execute(self, args):
 		self._args = args
@@ -95,6 +101,41 @@ class	Repository(Mode):
 				self.printMessage(result)
 			return
 		raise Exception("Group not found")
+
+	def cloneRepo(self, args):
+		author = self._user if len(args) == 1 else args[0]
+		gitRoute = "{0}@{1}:/{2}/{3}".format(self._user, self._gitServer, author, args[-1])
+		try:
+			s = shell.Shell()
+			s.execute(["git", "clone", gitRoute])
+		except:
+			pass
+
+	def linkRepo(self, args):
+		def ask():
+			res = raw_input("""Git repository already initialized and will be deleted.
+Type repo name to confirm [{0}]:""".format(args[-1]))
+			return res == args[-1]
+
+		def initGitRepo(shell):
+			if os.path.isdir(".git"):
+				response = ask()
+				if not response:
+					print("Link canceled")
+					sys.exit(1)
+				shell.execute(["rm", "-rf", ".git"])
+			shell.execute(["git", "init"])
+
+		def setGitRemote(shell):
+			shell.execute(["git", "remote", "add", "origin", gitRoute])
+		author = self._user if len(args) == 1 else args[0]
+		gitRoute = "{0}@{1}:/{2}/{3}".format(self._user, self._gitServer, author, args[-1])
+		try:
+			s = shell.Shell()
+			initGitRepo(s)
+			setGitRemote(s)
+		except:
+			pass
 
 class	SSHKey(Mode):
 

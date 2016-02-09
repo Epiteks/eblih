@@ -10,9 +10,9 @@ Global Options :
     -v | --verbose              -- Verbose
     -c | --nocolor              -- Remove the colors
     -b url | --baseurl=url      -- Base URL for BLIH
-    -t token | --token token    -- Specify token in the cmdline
-    -T folder | --tmp folder    -- Set folder as tmp
-    -g file | --groups file     -- File for groups informations
+    -t token | --token=token    -- Specify token in the cmdline
+    -T folder | --tmp=folder    -- Set folder as tmp
+    -g file | --groups=file     -- File for groups informations
     -V | --version              -- Version
 
 Commands :
@@ -20,7 +20,7 @@ Commands :
     group                       -- Group management
     sshkey                      -- SSH-KEYS management
     config                      -- Modify blihtek configuration
-    NO_COMMAND                  -- GUI Mode
+[TODO]NO_COMMAND                  -- GUI Mode
 
 Environment variables :
     EPITECH_LOGIN               -- Your login
@@ -33,10 +33,10 @@ Environment variables :
 Commands :
 [TODO]new repo                    -- Create and clone the repository repo
     create repo                 -- Create the repository repo
-[TODO]clone repo                  -- Clone the repository repo
-[TODO]clone user repo             -- Clone the repository repo of user
-[TODO]link repo                   -- Link the current directory with repo
-[TODO]link user repo              -- Link the current directory with repo
+    clone repo                  -- Clone the repository repo
+    clone user repo             -- Clone the repository repo of user
+    link repo                   -- Link the current directory with repo
+    link user repo              -- Link the current directory with repo
     info repo                   -- Get the repository metadata
     list                        -- List the repositories created
     list text                   -- List the repositories created containing text
@@ -45,7 +45,7 @@ Commands :
 [TODO]backupall                   -- Backup all your repositories
     getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for user on repo
-[TODO]setgacl repo group acl        -- Set (or remove) an acl for users in group on repo
+    setgacl repo group acl      -- Set (or remove) an acl for users in group on repo
     delete repo                 -- Delete the repository repo
                                 ACL format:
                                 r for read
