@@ -23,7 +23,10 @@ class	Mode(object):
 		self._groups = groups
 
 	def	printMessage(self, message):
-		print(message["data"]["message"])
+		if "message" in message["data"]:
+			print(message["data"]["message"])
+		elif "error" in message["data"]:
+			print(message["data"]["error"])
 
 	def	getGroupsConfig(self):
 		if not os.path.exists(self._groups):
@@ -52,6 +55,7 @@ class	Repository(Mode):
 					"setacl": self._api.setACL,
 					"setgacl": self.setGroupACL,
 					"delete": self._api.delete,
+					"new": self.newRepo,
 					"clone": self.cloneRepo,
 					"link": self.linkRepo}
 		self._callback = {"create": self.printMessage,
@@ -61,6 +65,7 @@ class	Repository(Mode):
 					"setacl": self.printMessage,
 					"setgacl": sys.exit,
 					"delete": self.printMessage,
+					"new": sys.exit,
 					"clone": sys.exit,
 					"link": sys.exit}
 
@@ -101,6 +106,11 @@ class	Repository(Mode):
 				self.printMessage(result)
 			return
 		raise Exception("Group not found")
+
+	def newRepo(self, args):
+		res = self._api.create(args)
+		self.printMessage(res)
+		self.cloneRepo(args)
 
 	def cloneRepo(self, args):
 		author = self._user if len(args) == 1 else args[0]

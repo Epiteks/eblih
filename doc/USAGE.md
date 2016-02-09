@@ -31,7 +31,7 @@ Environment variables :
 * Repository mode
 ````
 Commands :
-[TODO]new repo                    -- Create and clone the repository repo
+    new repo                    -- Create and clone the repository repo
     create repo                 -- Create the repository repo
     clone repo                  -- Clone the repository repo
     clone user repo             -- Clone the repository repo of user
@@ -43,10 +43,10 @@ Commands :
 [TODO]backup repo                 -- Backup the repository repo
 [TODO]backup user repo            -- Backup the repository repo of user
 [TODO]backupall                   -- Backup all your repositories
+    delete repo                 -- Delete the repository repo
     getacl repo                 -- Get the acls set for the repository
     setacl repo user acl        -- Set (or remove) an acl for user on repo
     setgacl repo group acl      -- Set (or remove) an acl for users in group on repo
-    delete repo                 -- Delete the repository repo
                                 ACL format:
                                 r for read
                                 w for write
