@@ -44,9 +44,10 @@ class	Mode(object):
 
 class	Repository(Mode):
 
-	def	__init__(self, user, token, groups="./groups.json", gitServer="git.epitech.eu"):
+	def	__init__(self, user, token, groups="./groups.json", folder=None, gitServer="git.epitech.eu"):
 		super(Repository, self).__init__(user, token, groups)
 		self._api = BLIH.Repository(self._user, self._token)
+		self._folder = folder
 		self._gitServer = gitServer
 		self._actions = {"create": self._api.create,
 					"list": self._api.list,
@@ -116,9 +117,11 @@ class	Repository(Mode):
 		author = self._user if len(args) == 1 else args[0]
 		gitRoute = "{0}@{1}:/{2}/{3}".format(self._user, self._gitServer, author, args[-1])
 		try:
-			s = shell.Shell()
+			print(self._folder)
+			s = shell.Shell(cwd=self._folder)
 			s.execute(["git", "clone", gitRoute])
-		except:
+		except Exception as e:
+			print(e)
 			pass
 
 	def linkRepo(self, args):
@@ -141,7 +144,7 @@ Type repo name to confirm [{0}]:""".format(args[-1]))
 		author = self._user if len(args) == 1 else args[0]
 		gitRoute = "{0}@{1}:/{2}/{3}".format(self._user, self._gitServer, author, args[-1])
 		try:
-			s = shell.Shell()
+			s = shell.Shell(cwd=self._folder)
 			initGitRepo(s)
 			setGitRemote(s)
 		except:
@@ -149,7 +152,7 @@ Type repo name to confirm [{0}]:""".format(args[-1]))
 
 class	SSHKey(Mode):
 
-	def	__init__(self, user, token, groups="./groups.json"):
+	def	__init__(self, user, token, groups="./groups.json", folder=None):
 		super(SSHKey, self).__init__(user, token, groups)
 		self._api = BLIH.SSHKey(self._user, self._token)
 		self._actions = {"upload": self._api.upload,
@@ -175,7 +178,7 @@ class	SSHKey(Mode):
 
 class	Group(Mode):
 
-	def	__init__(self, user=None, token=None, groups="./groups.json"):
+	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None):
 		super(Group, self).__init__(None, None, groups)
 		self._config = self.getGroupsConfig()
 		self._actions = {"create": self.create,
@@ -256,7 +259,7 @@ class	Group(Mode):
 
 class	Config(Mode):
 
-	def	__init__(self, user=None, token=None, groups="./groups.json"):
+	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None):
 		super(Config, self).__init__(None, None, groups)
 		self._actions = {"crypt": self.crypt,
 						"disp": self.disp}

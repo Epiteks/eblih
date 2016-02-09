@@ -18,8 +18,9 @@ class Shell(object):
 			print("\nOperation aborted\b")
 			self.action._cmd.terminate()
 
-	def __init__(self, out=subprocess.PIPE, err=subprocess.PIPE, background=False):
+	def __init__(self, cwd=None, out=subprocess.PIPE, err=subprocess.PIPE, background=False):
 		super(Shell, self).__init__()
+		self._cwd = cwd
 		self._out = out
 		self._err = err
 		self._background = background
@@ -37,7 +38,7 @@ class Shell(object):
 			if not len(args):
 				return
 			cmd = "exec " + " ".join(args)
-			self._cmd = subprocess.Popen(cmd, shell=True, stdout=self._out, stderr=self._err)
+			self._cmd = subprocess.Popen(cmd, cwd=self._cwd, shell=True, stdout=self._out, stderr=self._err)
 			if not self._background:
 				self._cmd.wait()
 				stdout = self._cmd.stdout.read()

@@ -59,9 +59,9 @@ Global Options :
 	-v | --verbose			-- Verbose
 	-c | --nocolor			-- Remove the colors
 	-b url | --baseurl=url		-- Base URL for BLIH
-	-t token | --token token	-- Specify token in the cmdline
-	-T folder | --tmp folder	-- Set folder as tmp
-	-g file | --groups file		-- File for groups informations
+	-t token | --token=token	-- Specify token in the cmdline
+	-T folder | --tmp=folder	-- Set folder as tmp
+	-g file | --groups=file		-- File for groups informations
 	-V | --version			-- Version
 
 Commands :
@@ -101,7 +101,7 @@ Environment variables :
 		try:
 			if args[0] not in modes:
 				raise mode.ModeError("Mode {0} not found".format(args[0]))
-			selectedMode = modes[args[0]](self._user, self._token, self._groups)
+			selectedMode = modes[args[0]](self._user, self._token, self._groups, self._folder)
 			selectedMode.execute(args[1:])
 		except mode.ModeError as e:
 			show(str(e), "red")
