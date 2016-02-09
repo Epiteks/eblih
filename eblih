@@ -20,7 +20,7 @@ def	setcolor(color="", colors=True):
 				"green": '\033[1;32m',
 				"NONE": '\033[0m'}
 	if colors == True and gColors == True:
-		return color[res] if color in res else color["NONE"]
+		return res[color] if color in res else res["NONE"]
 	else:
 		return ""
 
@@ -101,7 +101,7 @@ Environment variables :
 		try:
 			if args[0] not in modes:
 				raise mode.ModeError("Mode {0} not found".format(args[0]))
-			selectedMode = modes[args[0]](self._user, self._token, self._groups, self._folder)
+			selectedMode = modes[args[0]](self._user, self._token, self._groups, self._folder, self._tmp)
 			selectedMode.execute(args[1:])
 		except mode.ModeError as e:
 			show(str(e), "red")

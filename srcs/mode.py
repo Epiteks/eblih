@@ -3,6 +3,7 @@ import os
 import json
 import getpass
 import hashlib
+import shutil
 import shell
 import BLIH
 
@@ -44,10 +45,11 @@ class	Mode(object):
 
 class	Repository(Mode):
 
-	def	__init__(self, user, token, groups="./groups.json", folder=None, gitServer="git.epitech.eu"):
+	def	__init__(self, user, token, groups="./groups.json", folder=None, tmp=None, gitServer="git.epitech.eu"):
 		super(Repository, self).__init__(user, token, groups)
 		self._api = BLIH.Repository(self._user, self._token)
 		self._folder = folder
+		self._tmp = tmp
 		self._gitServer = gitServer
 		self._actions = {"create": self._api.create,
 					"list": self._api.list,
@@ -58,26 +60,27 @@ class	Repository(Mode):
 					"delete": self._api.delete,
 					"new": self.newRepo,
 					"clone": self.cloneRepo,
-					"link": self.linkRepo}
+					"link": self.linkRepo,
+					"backup": self.backupRepo,
+					"backupall": self.backupAllRepos}
 		self._callback = {"create": self.printMessage,
 					"list": self.printList,
 					"info": self.printMessage,
 					"getacl": self.printACL,
 					"setacl": self.printMessage,
-					"setgacl": sys.exit,
 					"delete": self.printMessage,
-					"new": sys.exit,
-					"clone": sys.exit,
-					"link": sys.exit}
+					"none": sys.exit}
 
 	def	execute(self, args):
 		self._args = args
 		if args[0] not in self._actions:
 			raise ModeError("Action {0} not found".format(args[0]), type="Repository")
 		result = self._actions[args[0]](args[1:])
-		self._callback[args[0]](result)
+		action = "none" if args[0] not in self._callback else args[0]
+		self._callback[action](result)
 
 	def	printList(self, data):
+		print(data)
 		repositories = []
 		for name in data["data"]["repositories"]:
 			if len(name):
@@ -97,6 +100,8 @@ class	Repository(Mode):
 			print("{0}:\t{1}".format(name, data["data"][name]))
 
 	def	setGroupACL(self, args):
+		if len(args) != 3:
+			raise ModeError("Missing arguments", type="Repository")
 		config = self.getGroupsConfig()
 		for group in config["groups"]:
 			if group["name"] != args[1]:
@@ -109,20 +114,54 @@ class	Repository(Mode):
 		raise Exception("Group not found")
 
 	def newRepo(self, args):
+		if len(args) != 1:
+			raise ModeError("Missing arguments", type="Repository")
 		res = self._api.create(args)
 		self.printMessage(res)
 		self.cloneRepo(args)
 
-	def cloneRepo(self, args):
+	def cloneRepo(self, args, backup=False):
+		if len(args) not in [1, 2]:
+			raise ModeError("Missing arguments", type="Repository")
 		author = self._user if len(args) == 1 else args[0]
 		gitRoute = "{0}@{1}:/{2}/{3}".format(self._user, self._gitServer, author, args[-1])
 		try:
-			print(self._folder)
-			s = shell.Shell(cwd=self._folder)
+			s = shell.Shell(cwd=(self._tmp if backup else self._folder))
 			s.execute(["git", "clone", gitRoute])
-		except Exception as e:
-			print(e)
+		except:
 			pass
+
+	def backupRepo(self, args, single=True):
+		if len(args) not in [1, 2]:
+			raise ModeError("Missing arguments", type="Repository")
+		if not os.path.exists(self._tmp):
+			os.makedirs(self._tmp)
+		self.cloneRepo(args, backup=True)
+		path = self._tmp + "/" + args[-1]
+		archive = args[-1] + ".tar"
+		if not os.path.exists(path) or not single:
+			return
+		try:
+			s = shell.Shell(cwd=self._tmp)
+			s.execute(["tar", "cfz", archive, args[-1]])
+			s.execute(["cp", archive, os.getenv('PWD')])
+		except:
+			pass
+		shutil.rmtree(self._tmp)
+
+	def backupAllRepos(self, args):
+		if len(args):
+			raise ModeError("Too much arguments", type="Repository")
+		response = self._api.list()
+		for name in response["data"]["repositories"]:
+			self.backupRepo([name], single=False)
+		try:
+			s = shell.Shell(cwd=self._tmp)
+			s.execute(["tar", "cfz", "repositories.tar", "*"])
+			s.execute(["cp", "repositories.tar", os.getenv('PWD')])
+		except:
+			pass
+		shutil.rmtree(self._tmp)
 
 	def linkRepo(self, args):
 		def ask():
@@ -141,6 +180,9 @@ Type repo name to confirm [{0}]:""".format(args[-1]))
 
 		def setGitRemote(shell):
 			shell.execute(["git", "remote", "add", "origin", gitRoute])
+
+		if len(args) not in [1, 2]:
+			raise ModeError("Missing arguments", type="Repository")
 		author = self._user if len(args) == 1 else args[0]
 		gitRoute = "{0}@{1}:/{2}/{3}".format(self._user, self._gitServer, author, args[-1])
 		try:
@@ -152,7 +194,7 @@ Type repo name to confirm [{0}]:""".format(args[-1]))
 
 class	SSHKey(Mode):
 
-	def	__init__(self, user, token, groups="./groups.json", folder=None):
+	def	__init__(self, user, token, groups="./groups.json", folder=None, tmp=None):
 		super(SSHKey, self).__init__(user, token, groups)
 		self._api = BLIH.SSHKey(self._user, self._token)
 		self._actions = {"upload": self._api.upload,
@@ -178,7 +220,7 @@ class	SSHKey(Mode):
 
 class	Group(Mode):
 
-	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None):
+	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None, tmp=None):
 		super(Group, self).__init__(None, None, groups)
 		self._config = self.getGroupsConfig()
 		self._actions = {"create": self.create,
@@ -259,7 +301,7 @@ class	Group(Mode):
 
 class	Config(Mode):
 
-	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None):
+	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None, tmp=None):
 		super(Config, self).__init__(None, None, groups)
 		self._actions = {"crypt": self.crypt,
 						"disp": self.disp}
