@@ -3,6 +3,7 @@
 * v2.0.0
     * Eblih is no longer based on original BLIH script !
     * Requests is now used for requests
+    * Install mode will be available soon
 
 * v1.2.0
     * Install mode
