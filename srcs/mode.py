@@ -165,8 +165,7 @@ class	Repository(Mode):
 
 	def linkRepo(self, args):
 		def ask():
-			res = raw_input("""Git repository already initialized and will be deleted.
-Type repo name to confirm [{0}]:""".format(args[-1]))
+			res = raw_input("Git repository already initialized and will be deleted.\nType repo name to confirm [{0}]:".format(args[-1]))
 			return res == args[-1]
 
 		def initGitRepo(shell):
@@ -186,7 +185,7 @@ Type repo name to confirm [{0}]:""".format(args[-1]))
 		author = self._user if len(args) == 1 else args[0]
 		gitRoute = "{0}@{1}:/{2}/{3}".format(self._user, self._gitServer, author, args[-1])
 		try:
-			s = shell.Shell(cwd=self._folder)
+			s = shell.Shell(cwd=os.getcwd())
 			initGitRepo(s)
 			setGitRemote(s)
 		except:
