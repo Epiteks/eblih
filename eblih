@@ -90,7 +90,7 @@ Environment variables :
 	def	execute(self, args):
 
 		if self._graphicMode:
-			print("GUI")
+			# print("GUI") ## Not available now
 			sys.exit(42)
 		elif args[0] == "help":
 			self.usage(exit=0)
