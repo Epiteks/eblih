@@ -1,10 +1,8 @@
 ## Changelogs
 
-* v2.0.0 (Work In Progress)
+* v2.0.0
     * Eblih is no longer based on original BLIH script !
     * Requests is now used for requests
-    * Some features are not available now but soon ;)
-    * More informations available soon !
 
 * v1.2.0
     * Install mode
