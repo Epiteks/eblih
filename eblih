@@ -32,7 +32,7 @@ def	show(message, color, direct=True):
 
 class	Eblih(object):
 
-	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, groups="./groups.json", graphicMode=False):
+	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, groups="{0}/.eblih".format(os.path.expanduser("~")), graphicMode=False):
 		super(Eblih, self).__init__()
 		self._user = user
 		self._token = token
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 		colors = True
 		tmp = "/tmp/eblih"
 		baseurl = "https://blih.epitech.eu"
-		groups = "srcs/groups.json"
+		groups = "{0}/.eblih".format(os.path.expanduser("~"))
 		for flag, value in opts:
 			if flag in ('-h', '--help'):
 				showHelp = True

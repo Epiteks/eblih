@@ -17,7 +17,7 @@ class	ModeError(Exception):
 
 class	Mode(object):
 
-	def __init__(self, user, token, groups="./groups.json"):
+	def __init__(self, user, token, groups="{0}/.eblih".format(os.path.expanduser("~"))):
 		super(Mode, self).__init__()
 		self._user = user
 		self._token = token
@@ -45,7 +45,7 @@ class	Mode(object):
 
 class	Repository(Mode):
 
-	def	__init__(self, user, token, groups="./groups.json", folder=None, tmp=None, gitServer="git.epitech.eu"):
+	def	__init__(self, user, token, groups="{0}/.eblih".format(os.path.expanduser("~")), folder=None, tmp=None, gitServer="git.epitech.eu"):
 		super(Repository, self).__init__(user, token, groups)
 		self._api = BLIH.Repository(self._user, self._token)
 		self._folder = folder
@@ -223,7 +223,7 @@ class	Repository(Mode):
 
 class	SSHKey(Mode):
 
-	def	__init__(self, user, token, groups="./groups.json", folder=None, tmp=None):
+	def	__init__(self, user, token, groups="{0}/.eblih".format(os.path.expanduser("~")), folder=None, tmp=None):
 		super(SSHKey, self).__init__(user, token, groups)
 		self._api = BLIH.SSHKey(self._user, self._token)
 		self._actions = {"upload": self._api.upload,
@@ -257,7 +257,7 @@ class	SSHKey(Mode):
 
 class	Group(Mode):
 
-	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None, tmp=None):
+	def	__init__(self, user=None, token=None, groups="{0}/.eblih".format(os.path.expanduser("~")), folder=None, tmp=None):
 		super(Group, self).__init__(None, None, groups)
 		self._config = self.getGroupsConfig()
 		self._actions = {"create": self.create,
@@ -356,7 +356,7 @@ class	Group(Mode):
 
 class	Config(Mode):
 
-	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None, tmp=None):
+	def	__init__(self, user=None, token=None, groups="{0}/.eblih".format(os.path.expanduser("~")), folder=None, tmp=None):
 		super(Config, self).__init__(None, None, groups)
 		self._actions = {"crypt": self.crypt,
 						"disp": self.disp}
