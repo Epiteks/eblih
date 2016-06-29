@@ -28,4 +28,4 @@ set -U EPITECH_FOLDER "/your/work/folder"
 
 ## Thanks
 
-Thanks to korovi_o, [Rhatchet](https://github.com/Rhatchet) and [pouleta](https://github.com/pouleta)
+Thanks to korovi_o, [Shakarang](https://github.com/Shakarang) and [pouleta](https://github.com/pouleta)
