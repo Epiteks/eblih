@@ -381,14 +381,16 @@ class	Config(Mode):
 		def	show(var):
 			print("{0}={1}".format(var, os.getenv(var)))
 
-		var = ["EPITECH_LOGIN", "EPITECH_TOKEN", "EPITECH_FOLDER"]
+		var = {"login": "EPITECH_LOGIN",
+				"token": "EPITECH_TOKEN",
+				"folder": "EPITECH_FOLDER"}
 		if len(args) == 1:
 			if args[0] not in var:
 				raise ModeError("Variable {0} not found".format(args[0]), type="Config")
-			show(args[0])
+			show(var[args[0]])
 			return
 		for item in var:
-			show(item)
+			show(var[item])
 
 	def help(self):
 		print """Commands :
