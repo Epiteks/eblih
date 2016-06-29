@@ -322,6 +322,8 @@ class	Group(Mode):
 			if len(args) and group["name"] != args[0]:
 				continue
 			print(group["name"])
+			if not len(group["users"]):
+				print("\tEmpty")
 			for user in group["users"]:
 				print("\t{0}: {1}".format(user["name"], user["acls"]))
 			if len(args) and group["name"] == args[0]:
