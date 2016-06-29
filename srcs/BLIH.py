@@ -3,16 +3,146 @@ import hmac
 import hashlib
 import request
 
+_routes = {
+	"repository":
+	[
+		{
+			"action": "create",
+			"route": "/repositories",
+			"arguments": None,
+			"method": "POST",
+			"data":
+			[
+				{
+					"name": "name",
+					"default": None,
+					"optional": False
+				},
+				{
+					"name": "type",
+					"default": "git",
+					"optional": False
+				},
+				{
+					"name": "description",
+					"default": None,
+					"optional": True
+				}
+			]
+		},
+		{
+			"action": "list",
+			"route": "/repositories",
+			"arguments": None,
+			"method": "GET",
+			"data": None
+		},
+		{
+			"action": "delete",
+			"route": "/repository/$",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "DELETE",
+			"data": None
+		},
+		{
+			"action": "info",
+			"route": "/repository/$",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "GET",
+			"data": None
+		},
+		{
+			"action": "getacl",
+			"route": "/repository/$/acls",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "GET",
+			"data": None
+		},
+		{
+			"action": "setacl",
+			"route": "/repository/$/acls",
+			"arguments":
+			[
+				"name"
+			],
+			"method": "POST",
+			"data":
+			[
+				{
+					"name": "user",
+					"default": None,
+					"optional": False
+				},
+				{
+					"name": "acl",
+					"default": None,
+					"optional": False
+				}
+			]
+		}
+	],
+	"sshkey":
+	[
+		{
+			"action": "add",
+			"route": "/sshkeys",
+			"arguments": None,
+			"method": "POST",
+			"data":
+			[
+				{
+					"name": "sshkey",
+					"default": None,
+					"optional": False
+				}
+			]
+		},
+		{
+			"action": "delete",
+			"route": "/sshkey/$",
+			"arguments":
+			[
+				"sshkey"
+			],
+			"method": "DELETE",
+			"data": None
+		},
+		{
+			"action": "list",
+			"route": "/sshkeys",
+			"arguments": None,
+			"method": "GET",
+			"data": None
+		}
+	],
+	"whoami":
+	[
+		{
+			"action": "whoami",
+			"route": "/whoami",
+			"arguments": None,
+			"method": "GET",
+			"data": None
+		}
+	]
+}
+
 class	API(object):
 
-	def	__init__(self, login, token, baseURL="https://blih.epitech.eu", routes="srcs/BLIHAPI.json"):
+	def	__init__(self, login, token, baseURL="https://blih.epitech.eu"):
 		super(API, self).__init__()
 		self._base = baseURL
 		self._login = login
 		self._token = bytearray(str(token), 'utf8')
-		if routes:
-			with open(routes) as data:
-				self._actions = json.load(data)
 
 	def	make_body(self, data=None):
 		hash_signature = hmac.new(self._token, msg=bytearray(self._login, 'utf-8'), digestmod=hashlib.sha512)
@@ -96,6 +226,7 @@ class	Repository(API):
 
 	def	__init__(self, login, token, baseURL="https://blih.epitech.eu"):
 		super(Repository, self).__init__(login, token, baseURL, None)
+		self._actions = _routes["repository"]
 
 	def	create(self, args):
 		data = {"name": args[0], "type": "git", "description": ""}
@@ -121,6 +252,7 @@ class	SSHKey(API):
 
 	def	__init__(self, login, token, baseURL="https://blih.epitech.eu"):
 		super(SSHKey, self).__init__(login, token, baseURL, None)
+		self._actions = _routes["sshkey"]
 
 	def	upload(self, args):
 		with open(args[0], "r") as key:
