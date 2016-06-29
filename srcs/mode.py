@@ -53,6 +53,7 @@ class	Repository(Mode):
 		self._gitServer = gitServer
 		self._actions = {"create": self._api.create,
 					"list": self._api.list,
+					"listfilter": self.listFilter,
 					"info": self._api.info,
 					"getacl": self._api.getACL,
 					"setacl": self._api.setACL,
@@ -77,15 +78,19 @@ class	Repository(Mode):
 			return self.help()
 		elif args[0] not in self._actions:
 			raise ModeError("Action {0} not found".format(args[0]), type="Repository")
+		args[0] += "filter" if args[0] == "list" and len(args) > 1 else ""
 		result = self._actions[args[0]](args[1:])
 		action = "none" if args[0] not in self._callback else args[0]
 		self._callback[action](result)
 
-	def	printList(self, data):
-		print(data)
+	def listFilter(self, args):
+		result = self._api.list()
+		self.printList(result, filter=args[0])
+
+	def	printList(self, data, filter=""):
 		repositories = []
 		for name in data["data"]["repositories"]:
-			if len(name):
+			if len(name) and filter in name:
 				repositories.append(name)
 		repositories.sort(key=lambda x:x.lower())
 		for name in repositories:
