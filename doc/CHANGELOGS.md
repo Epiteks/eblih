@@ -1,5 +1,11 @@
 ## Changelogs
 
+* v2.0.3
+    * BUGFIX : Error when missing action
+    * UPDATE : Show usage for mode when no action is given (Linked to previous BUGFIX)
+    * UPDATE : Modify location of config file ($EBLIH_SRCS/srcs/group.json -> ~/.eblih)
+    * NEW : Installation script available [here](https://github.com/hug33k/eblih/blob/master/install.sh)
+
 * v2.0.0
     * Eblih is no longer based on original BLIH script !
     * Requests is now used for requests

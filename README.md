@@ -18,6 +18,23 @@ set -U EPITECH_TOKEN "UNIX PWD in SHA512"
 set -U EPITECH_FOLDER "/your/work/folder"
 ````
 
+## Installation
+
+### Via installation script
+
+Installation script available [here](https://github.com/hug33k/eblih/blob/master/install.sh)
+````sh
+$> curl https://github.com/hug33k/eblih/blob/master/install.sh | sh
+````
+
+### Via Git
+
+Clone the repo and add a symbolic link to use eblih anywhere.
+
+````sh
+$> ln -s $EBLIH_LOCATION/eblih /usr/local/bin/eblih
+````
+
 ## Usage
 
 [Available here](https://github.com/hug33k/eblih/blob/master/doc/USAGE.md)
