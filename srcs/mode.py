@@ -73,7 +73,9 @@ class	Repository(Mode):
 
 	def	execute(self, args):
 		self._args = args
-		if args[0] not in self._actions:
+		if not args:
+			return self.help()
+		elif args[0] not in self._actions:
 			raise ModeError("Action {0} not found".format(args[0]), type="Repository")
 		result = self._actions[args[0]](args[1:])
 		action = "none" if args[0] not in self._callback else args[0]
@@ -191,6 +193,29 @@ class	Repository(Mode):
 		except:
 			pass
 
+	def help(self):
+		print """Commands :
+    new repo                    -- Create and clone the repository repo
+    create repo                 -- Create the repository repo
+    clone repo                  -- Clone the repository repo
+    clone user repo             -- Clone the repository repo of user
+    link repo                   -- Link the current directory with repo
+    link user repo              -- Link the current directory with repo
+    info repo                   -- Get the repository metadata
+    list                        -- List the repositories created
+    list text                   -- List the repositories created containing text
+    backup repo                 -- Backup the repository repo
+    backup user repo            -- Backup the repository repo of user
+    backupall                   -- Backup all your repositories
+    delete repo                 -- Delete the repository repo
+    getacl repo                 -- Get the acls set for the repository
+    setacl repo user acl        -- Set (or remove) an acl for user on repo
+    setgacl repo group acl      -- Set (or remove) an acl for users in group on repo
+                                ACL format:
+                                r for read
+                                w for write
+                                a for admin"""
+
 class	SSHKey(Mode):
 
 	def	__init__(self, user, token, groups="./groups.json", folder=None, tmp=None):
@@ -204,7 +229,9 @@ class	SSHKey(Mode):
 					"delete": self.printMessage}
 
 	def	execute(self, args):
-		if args[0] not in self._actions:
+		if not args:
+			return self.help()
+		elif args[0] not in self._actions:
 			raise ModeError("Action {0} not found".format(args[0]), type="SSHKey")
 		result = self._actions[args[0]](args[1:])
 		self._callback[args[0]](result)
@@ -216,6 +243,12 @@ class	SSHKey(Mode):
 		keys.sort(key=lambda x:x.lower())
 		for key in keys:
 			print("{0}\n{1}\n".format(key, data["data"][key]))
+
+	def help(self):
+		print """Commands :
+    upload file                 -- Upload a new ssh-key
+    list                        -- List the ssh-keys
+    delete sshkey               -- Delete the sshkey with comment <sshkey>"""
 
 class	Group(Mode):
 
@@ -229,7 +262,9 @@ class	Group(Mode):
 					"list": self.show}
 
 	def	execute(self, args):
-		if args[0] not in self._actions:
+		if not args:
+			return self.help()
+		elif args[0] not in self._actions:
 			raise ModeError("Action {0} not found".format(args[0]), type="Group")
 		self._actions[args[0]](args[1:])
 
@@ -298,6 +333,20 @@ class	Group(Mode):
 			return
 		raise ModeError("Group {0} not found".format(args[0]), type="Group")
 
+	def help(self):
+		print """Commands :
+    create name                 -- Create the group name
+    add name user acl           -- Add user to the group name with acl (Update user if already in group)
+    delete name                 -- Remove the group name
+    delete name users           -- Remove users (one or more) from the group name
+    list                        -- List the groups
+    list name                   -- List the users in the group name
+    rename name newname         -- Change group name into new group name
+                                ACL format:
+                                r for read
+                                w for write
+                                a for admin"""
+
 class	Config(Mode):
 
 	def	__init__(self, user=None, token=None, groups="./groups.json", folder=None, tmp=None):
@@ -306,7 +355,9 @@ class	Config(Mode):
 						"disp": self.disp}
 
 	def	execute(self, args):
-		if args[0] not in self._actions:
+		if not args:
+			return self.help()
+		elif args[0] not in self._actions:
 			raise ModeError("Action {0} not found".format(args[0]), type="Config")
 		self._actions[args[0]](args[1:])
 
@@ -331,3 +382,13 @@ class	Config(Mode):
 			return
 		for item in var:
 			show(item)
+
+	def help(self):
+		print """Commands :
+    crypt                       -- Crypt your password in SHA512 for EPITECH_TOKEN
+    disp                        -- Display all the values of blihtek variables
+    disp variable               -- Display the value of blihtek variable
+                                Variables:
+                                login    for EPITECH_LOGIN
+                                token  for EPITECH_TOKEN
+                                folder for EPITECH_FOLDER"""
