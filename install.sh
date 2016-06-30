@@ -5,7 +5,7 @@ do
 	[ -w $_file ] && rm -rf $_file || sudo rm -rf $_file
 done
 
-curl -sL https://github.com/hug33k/eblih/archive/v2.0.0.tar.gz > /tmp/eblih.tar.gz
+curl -sL https://github.com/hug33k/eblih/archive/v2.0.5.tar.gz > /tmp/eblih.tar.gz
 
 if [ -w /usr/local/bin ]; then
 	mkdir /usr/local/bin/eblih_srcs
