@@ -40,7 +40,7 @@ class	Mode(object):
 		with open(self._groups, "w") as dataFile:
 			dataFile.write(json.dumps(data))
 
-	def	execute(self, args):
+	def	execute(self, args=None):
 		return
 
 class	Repository(Mode):
@@ -72,7 +72,7 @@ class	Repository(Mode):
 					"delete": self.printMessage,
 					"none": sys.exit}
 
-	def	execute(self, args):
+	def	execute(self, args=None):
 		self._args = args
 		if not args:
 			return self.help()
@@ -233,7 +233,7 @@ class	SSHKey(Mode):
 					"list": self.printKeys,
 					"delete": self.printMessage}
 
-	def	execute(self, args):
+	def	execute(self, args=None):
 		if not args:
 			return self.help()
 		elif args[0] not in self._actions:
@@ -266,7 +266,7 @@ class	Group(Mode):
 					"rename": self.rename,
 					"list": self.show}
 
-	def	execute(self, args):
+	def	execute(self, args=None):
 		if not args:
 			return self.help()
 		elif args[0] not in self._actions:
@@ -361,7 +361,7 @@ class	Config(Mode):
 		self._actions = {"crypt": self.crypt,
 						"disp": self.disp}
 
-	def	execute(self, args):
+	def	execute(self, args=None):
 		if not args:
 			return self.help()
 		elif args[0] not in self._actions:

@@ -1,3 +1,4 @@
+import sys
 import json
 import hmac
 import hashlib
@@ -211,8 +212,12 @@ class	API(object):
 	def	execute(self, user_mode=None, user_action=None, route=[], body=[], req=None):
 
 		def	execReq(req):
-			status = req.execute()
-			return req.parse() if status else req.getError()
+			try:
+				status = req.execute()
+				return req.parse() if status else req.getError()
+			except Exception as e:
+				print("\033[1;31mThere was an error\033[0m ({0})".format(str(e)))
+				sys.exit(-1)
 
 		if not req:
 			action = self.get_action(user_mode, user_action)
@@ -225,7 +230,7 @@ class	API(object):
 class	Repository(API):
 
 	def	__init__(self, login, token, baseURL="https://blih.epitech.eu"):
-		super(Repository, self).__init__(login, token, baseURL, None)
+		super(Repository, self).__init__(login, token, baseURL)
 		self._actions = _routes["repository"]
 
 	def	create(self, args):
@@ -251,7 +256,7 @@ class	Repository(API):
 class	SSHKey(API):
 
 	def	__init__(self, login, token, baseURL="https://blih.epitech.eu"):
-		super(SSHKey, self).__init__(login, token, baseURL, None)
+		super(SSHKey, self).__init__(login, token, baseURL)
 		self._actions = _routes["sshkey"]
 
 	def	upload(self, args):
