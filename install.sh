@@ -18,3 +18,15 @@ else
 fi
 
 rm -rf /tmp/eblih.tar.gz
+
+for _pip in pip pip2 pip2.7
+do
+	if ! [ type $_pip 2&>1 >/dev/null ]; then
+		_out=$(eval "$_pip -V")
+		if grep -q "python 2.7" <<< $_out; then
+			[ -w $(which $_pip) ] && eval "$_pip install -Ur /usr/local/bin/eblih_srcs/requirements.txt" || eval "sudo $_pip install -Ur /usr/local/bin/eblih_srcs/requirements.txt"
+			exit
+		fi
+	fi
+done
+echo "pip for Python 2.7 not found, you may have dependencies issues. (https://pip.pypa.io/en/stable/installing/)"

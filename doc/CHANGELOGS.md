@@ -1,5 +1,11 @@
 ## Changelogs
 
+* v2.0.5
+    * BUGFIX : Errors with Requests lib fixed
+    * UPDATE : Update shebang
+    * UPDATE : Installation script will now use pip for dependencies
+    * NEW : Add requirements.txt for dependencies
+
 * v2.0.3
     * BUGFIX : Error when missing action
     * UPDATE : Show usage for mode when no action is given (Linked to previous BUGFIX)
