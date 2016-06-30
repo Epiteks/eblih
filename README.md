@@ -24,7 +24,7 @@ set -U EPITECH_FOLDER "/your/work/folder"
 
 Installation script available [here](https://github.com/hug33k/eblih/blob/master/install.sh)
 ````sh
-$> curl https://github.com/hug33k/eblih/blob/master/install.sh | sh
+$> curl https://raw.githubusercontent.com/hug33k/eblih/master/install.sh | sh
 ````
 
 ### Via Git
