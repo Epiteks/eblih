@@ -5,7 +5,8 @@ do
 	[ -w $_file ] && rm -rf $_file || sudo rm -rf $_file
 done
 
-curl -sL https://github.com/hug33k/eblih/archive/v2.0.5.tar.gz > /tmp/eblih.tar.gz
+_version="$(curl -s https://github.com/hug33k/eblih/releases/latest | perl -nle 'print $& if m{v\d+.\d+.\d+}')"
+curl -sL https://github.com/hug33k/eblih/archive/$_version.tar.gz > /tmp/eblih.tar.gz
 
 if [ -w /usr/local/bin ]; then
 	mkdir /usr/local/bin/eblih_srcs
@@ -22,7 +23,7 @@ rm -rf /tmp/eblih.tar.gz
 for _pip in pip pip2 pip2.7
 do
 	if ! [ type $_pip 2&>1 >/dev/null ]; then
-		_out=$(eval "$_pip -V")
+		_out="$(eval "$_pip -V")"
 		if grep -q "python 2.7" <<< $_out; then
 			[ -w $(which $_pip) ] && eval "$_pip install -Ur /usr/local/bin/eblih_srcs/requirements.txt" || eval "sudo $_pip install -Ur /usr/local/bin/eblih_srcs/requirements.txt"
 			exit
