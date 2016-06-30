@@ -1,5 +1,9 @@
 ## Changelogs
 
+* v2.0.6
+    * BUGFIX : Patch Repository List / ACLs when empty
+    * UPDATE : Dynamic installation scrit (No longer version number hardcoded)
+
 * v2.0.5
     * BUGFIX : Errors with Requests lib fixed
     * UPDATE : Update shebang

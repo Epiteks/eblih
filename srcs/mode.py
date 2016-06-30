@@ -89,6 +89,9 @@ class	Repository(Mode):
 
 	def	printList(self, data, filter=""):
 		repositories = []
+		if not data:
+			print("No repositories found")
+			return
 		for name in data["data"]["repositories"]:
 			if len(name) and filter in name:
 				repositories.append(name)
@@ -100,6 +103,9 @@ class	Repository(Mode):
 
 	def	printACL(self, data):
 		users = []
+		if not data:
+			print("No ACLs found")
+			return
 		for name in data["data"]:
 			users.append(name)
 		users.sort(key=lambda x:x.lower())
