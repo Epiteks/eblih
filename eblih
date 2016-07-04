@@ -33,7 +33,7 @@ def	show(message, color, direct=True):
 
 class	Eblih(object):
 
-	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, groups="{0}/.eblih".format(os.path.expanduser("~")), graphicMode=False):
+	def	__init__(self, user, token, color=True, folder=os.getenv('PWD'), tmp="/tmp/eblih", baseurl="https://blih.epitech.eu/", verbose=False, groups="{0}/.eblih".format(os.path.expanduser("~"))):
 		super(Eblih, self).__init__()
 		self._user = user
 		self._token = token
@@ -43,7 +43,6 @@ class	Eblih(object):
 		self._baseurl = baseurl
 		self._verbose = verbose
 		self._groups = groups
-		self._graphicMode = graphicMode
 		signal.signal(signal.SIGINT, self.signal_handler)
 
 	def	signal_handler(self, signal, frame):
@@ -90,10 +89,7 @@ Environment variables :
 
 	def	execute(self, args):
 
-		if self._graphicMode:
-			# print("GUI") ## Not available now
-			sys.exit(42)
-		elif args[0] == "help":
+		if args[0] == "help":
 			self.usage(exit=0)
 		modes = {"repository": mode.Repository,
 					"group": mode.Group,
@@ -116,7 +112,7 @@ if __name__ == '__main__':
 		except getopt.GetoptError as e:
 			print(e)
 			Eblih.usage()
-		guest = verbose = graphicMode = version = showHelp = usage = False
+		guest = verbose = version = showHelp = usage = False
 		user = token = None
 		colors = True
 		tmp = "/tmp/eblih"
@@ -154,7 +150,6 @@ if __name__ == '__main__':
 			Eblih.usage(exit=0)
 		if version:
 			Eblih.version()
-		graphicMode = True if len(args) == 0 else False
 		if user == None:
 			if os.getenv("EPITECH_LOGIN") != None and len(os.getenv("EPITECH_LOGIN")):
 				user = os.getenv("EPITECH_LOGIN")
@@ -169,7 +164,7 @@ if __name__ == '__main__':
 				else:
 					password = sys.stdin.readline().rstrip()
 				token = bytearray(hashlib.sha512(bytearray(password, 'utf8')).hexdigest(), 'utf8')
-		return Eblih(user, token, colors, folder, tmp, baseurl, verbose, groups, graphicMode), args
+		return Eblih(user, token, colors, folder, tmp, baseurl, verbose, groups), args
 
 	eblih, args = getEblih(sys.argv[1:])
 	eblih.execute(args)

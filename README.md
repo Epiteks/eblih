@@ -22,9 +22,9 @@ set -U EPITECH_FOLDER "/your/work/folder"
 
 ### Via installation script
 
-Installation script available [here](https://github.com/hug33k/eblih/blob/master/install.sh)
+Installation script available [here](https://github.com/epiteks/eblih/blob/master/install.sh)
 ````sh
-$> curl https://raw.githubusercontent.com/hug33k/eblih/master/install.sh | sh
+$> curl https://raw.githubusercontent.com/epiteks/eblih/master/install.sh | sh
 ````
 
 ### Via Git
@@ -37,11 +37,11 @@ $> ln -s $EBLIH_LOCATION/eblih /usr/local/bin/eblih
 
 ## Usage
 
-[Available here](https://github.com/hug33k/eblih/blob/master/doc/USAGE.md)
+[Available here](https://github.com/epiteks/eblih/blob/master/doc/USAGE.md)
 
 ## Changelogs
 
-[Available here](https://github.com/hug33k/eblih/blob/master/doc/CHANGELOGS.md)
+[Available here](https://github.com/epiteks/eblih/blob/master/doc/CHANGELOGS.md)
 
 ## Thanks
 

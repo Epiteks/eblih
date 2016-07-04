@@ -14,7 +14,7 @@
     * BUGFIX : Error when missing action
     * UPDATE : Show usage for mode when no action is given (Linked to previous BUGFIX)
     * UPDATE : Modify location of config file ($EBLIH_SRCS/srcs/group.json -> ~/.eblih)
-    * NEW : Installation script available [here](https://github.com/hug33k/eblih/blob/master/install.sh)
+    * NEW : Installation script available [here](https://github.com/epiteks/eblih/blob/master/install.sh)
 
 * v2.0.0
     * Eblih is no longer based on original BLIH script !
@@ -33,7 +33,7 @@
     * Add "group" mode
         * You can now use groups to set easily ACLs for your repositories
         * Availables actions are "create / add / remove / list"
-        * You can check [here](https://github.com/hug33k/eblih/blob/master/doc/USAGE.md) to see all the commands
+        * You can check [here](https://github.com/epiteks/eblih/blob/master/doc/USAGE.md) to see all the commands
     * Add redirection modes for password (By [pouleta](https://github.com/pouleta))
         * You can now send your password to blihtek with two other methods
 
