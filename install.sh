@@ -5,7 +5,7 @@ do
 	[ -w $_file ] && rm -rf $_file || sudo rm -rf $_file
 done
 
-_version="$(curl -s https://raw.githubusercontent.com/epiteks/eblih/v2.0.6/.version)"
+_version="$(curl -s https://raw.githubusercontent.com/epiteks/eblih/master/.version)"
 curl -sL https://github.com/epiteks/eblih/archive/v$_version.tar.gz > /tmp/eblih.tar.gz
 
 if [ -w /usr/local/bin ]; then
